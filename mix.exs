@@ -9,7 +9,7 @@ defmodule Entrance.Mixfile do
       elixirc_paths: elixirc_paths(Mix.env()),
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
-      description: "Easy, secure and flexible authentication tools for Elixir projects.",
+      description: "Easy, secure and flexible authentication for Plug / Phoenix projects.",
       package: package(),
       docs: [extras: ["README.md"], main: "readme"],
       deps: deps()
