@@ -43,6 +43,17 @@ defmodule Entrance do
   ```
   """
   def authenticate_by(user_module \\ nil, fields, password) do
+    unless Keyword.keyword?(fields) do
+      raise """
+      authenticate_by/2 and authenticate_by/3 must receive a keyword list
+
+      Here is some examples:
+
+        Entrance.authenticate_by([email: "joe@dirt.com", admin: true], "brandyr00lz")
+        Entrance.authenticate_by(Customer, [email: "joe@dirt.com", admin: true], "brandyr00lz")
+      """
+    end
+
     authenticate_action(user_module, fields, password)
   end
 
@@ -76,17 +87,6 @@ defmodule Entrance do
   end
 
   defp authenticate_action(user_module, fields, password) do
-    unless Keyword.keyword?(fields) do
-      raise """
-      authenticate_by/2 and authenticate_by/3 must receive a keyword list
-
-      Here is some examples:
-
-        Entrance.authenticate_by([email: "joe@dirt.com", admin: true], "brandyr00lz")
-        Entrance.authenticate_by(Customer, [email: "joe@dirt.com", admin: true], "brandyr00lz")
-      """
-    end
-
     user_module = user_module || get_user_module()
     user = repo_module().get_by(user_module, fields)
 
@@ -126,7 +126,8 @@ defmodule Entrance do
           config :entrance,
             repo: MyApp.Repo,
             secure_with: Entrance.Auth.Bcrypt,
-            user_module: user: MyApp.User
+            user_module: MyApp.User
+            default_authenticable_field: :email
         """
 
       module ->
