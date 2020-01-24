@@ -18,17 +18,17 @@ defmodule Entrance.Auth.Bcrypt do
 
     def create_changeset(struct, changes) do
       struct
-        |> cast(changes, ~w(email password))
-        |> hash_password
+      |> cast(changes, ~w(email password))
+      |> hash_password
     end
   end
   ```
 
-  To authenticate a user in your application, you can use `authenticate/2`:
+  To authenticate a user in your application, you can use `auth/2`:
 
   ```
   user = Repo.get(User, 1)
-  User.authenticate(user, "password")
+  User.auth(user, "password")
   ```
   """
   alias Ecto.Changeset
@@ -51,17 +51,23 @@ defmodule Entrance.Auth.Bcrypt do
   end
 
   @doc """
-  Compares the given `password` against the given `user`'ss password.
+  Compares the given `password` against the given `user`'s password.
+
+  ## Example
+
+  ```
+  user = %{hashed_password: "iHkKDjU_example"}
+  password = "user@password"
+  Entrance.Auth.Bcrypt.auth(user, password)
+  ```
+
   """
-  def authenticate(user, password) do
-    Bcrypt.verify_pass(password, user.hashed_password)
-  end
+  def auth(user, password),
+    do: Bcrypt.verify_pass(password, user.hashed_password)
 
   @doc """
   Simulates password check to help prevent timing attacks. Delegates to
   `Bcrypt.no_user_verify/0`.
   """
-  def no_user_verify() do
-    Bcrypt.no_user_verify()
-  end
+  def no_user_verify(), do: Bcrypt.no_user_verify()
 end

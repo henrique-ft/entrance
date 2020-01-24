@@ -16,20 +16,22 @@ defmodule Entrance.Auth.SecretTest do
     end
   end
 
-  test "put_session_secret/2 does generate an random session key" do
-    changeset = FakeUser.changeset(%{}) |> Secret.put_session_secret()
-    assert changeset.changes[:session_secret]
-  end
+  describe "Secret.put_session_secret/2" do
+    test "does generate an random session key" do
+      changeset = FakeUser.changeset(%{}) |> Secret.put_session_secret()
+      assert changeset.changes[:session_secret]
+    end
 
-  test "put_session_secret/2 does generate different random session keys for users" do
-    changeset = FakeUser.changeset(%{}) |> Secret.put_session_secret()
-    changeset2 = FakeUser.changeset(%{}) |> Secret.put_session_secret()
-    assert changeset.changes.session_secret != changeset2.changes.session_secret
-  end
+    test "does generate different random session keys for users" do
+      changeset = FakeUser.changeset(%{}) |> Secret.put_session_secret()
+      changeset2 = FakeUser.changeset(%{}) |> Secret.put_session_secret()
+      assert changeset.changes.session_secret != changeset2.changes.session_secret
+    end
 
-  test "put_session_secret/2 does generate different random session keys for the same user" do
-    changeset = FakeUser.changeset(%{}) |> Secret.put_session_secret()
-    changeset2 = changeset |> Secret.put_session_secret()
-    assert changeset.changes.session_secret != changeset2.changes.session_secret
+    test "does generate different random session keys for the same user" do
+      changeset = FakeUser.changeset(%{}) |> Secret.put_session_secret()
+      changeset2 = changeset |> Secret.put_session_secret()
+      assert changeset.changes.session_secret != changeset2.changes.session_secret
+    end
   end
 end

@@ -27,11 +27,11 @@ defmodule Entrance.Login.Session do
   """
   def get_current_user(conn) do
     id = Plug.Conn.get_session(conn, @session_key)
-    secret = Plug.Conn.get_session(conn, @session_secret)
-    repo = Application.get_env(:entrance, :repo)
-    user_module = Application.get_env(:entrance, :user_module)
 
     if !is_nil(id) do
+      secret = Plug.Conn.get_session(conn, @session_secret)
+      repo = Application.get_env(:entrance, :repo)
+      user_module = Application.get_env(:entrance, :user_module)
       repo.get_by(user_module, id: id, session_secret: secret)
     end
   end
