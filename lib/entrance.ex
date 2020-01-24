@@ -126,7 +126,7 @@ defmodule Entrance do
           config :entrance,
             repo: MyApp.Repo,
             secure_with: Entrance.Auth.Bcrypt,
-            authenticable_modules: [user: MyApp.User] # future updates
+            user_module: user: MyApp.User
         """
 
       module ->
