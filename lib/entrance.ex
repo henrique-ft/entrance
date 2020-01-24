@@ -5,10 +5,10 @@ defmodule Entrance do
   """
 
   @doc """
-  Authenticates a user by their email and password. Returns the user if the
-  user is found and the password is correct, otherwise nil.
+  Authenticates a user by the default authenticable field (defined in config) and password. Returns the user if the
+  user is found and the password is correct, otherwise nil. For example, if the default authenticable field configured is :email, it will try match with the :email field of user schema.
 
-  Requires `user_module`, `secure_with`, and `repo` to be configured via
+  Requires `user_module`, `secure_with`, `repo` and `default_authenticable_field` to be configured via
   `Mix.Config`. See [README.md] for an example.
 
   ```
@@ -21,11 +21,11 @@ defmodule Entrance do
   Entrance.authenticate(Customer, "brandy@dirt.com", "super-password")
   ```
   """
-  def authenticate(user_module \\ nil, email, password),
-    do: authenticate_action(user_module, [email: email], password)
+  def authenticate(user_module \\ nil, field, password),
+    do: authenticate_action(user_module, [{default_authenticable_field(), field}], password)
 
   @doc """
-  Similar to authenticate/2, but can authenticates a user with differents fields, and even more than one field. Returns the user if the
+  Similar to authenticate/2, but authenticates a user by one or more differents fields. Returns the user if the
   user is found and the password is correct, otherwise nil.
 
   Requires `user_module`, `secure_with`, and `repo` to be configured via
@@ -44,7 +44,7 @@ defmodule Entrance do
   def authenticate_by(user_module \\ nil, fields, password) do
     unless Keyword.keyword?(fields) do
       raise """
-      authenticate_by/3 must receive a keyword list
+      Entrance.authenticate_by/2 must receive a keyword list
 
       Here is some examples:
 
@@ -104,6 +104,8 @@ defmodule Entrance do
 
   defp auth_module, do: get_module(:secure_with)
 
+  defp default_authenticable_field, do: get_module(:default_authenticable_field)
+
   defp get_module(name) do
     case Application.get_env(:entrance, name) do
       nil ->
@@ -115,7 +117,7 @@ defmodule Entrance do
           config :entrance,
             repo: MyApp.Repo,
             secure_with: Entrance.Auth.Bcrypt,
-            user_module: MyApp.User
+            user_module: MyApp.User,
             default_authenticable_field: :email
         """
 

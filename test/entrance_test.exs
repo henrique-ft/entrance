@@ -2,6 +2,7 @@ defmodule EntranceTest do
   use Entrance.ConnCase
   doctest Entrance
 
+  @default_authenticable_field :email
   @valid_email "joe@dirt.com"
   @valid_alternate_email "brandy@dirt.com"
 
@@ -50,11 +51,27 @@ defmodule EntranceTest do
         entrance: [
           repo: FakeSuccessRepo,
           user_module: Fake,
-          secure_with: Entrance.Auth.Bcrypt
+          secure_with: Entrance.Auth.Bcrypt,
+          default_authenticable_field: @default_authenticable_field
         ]
       )
 
       assert Entrance.authenticate(@valid_email, "password").email == @valid_email
+    end
+
+    test "raises error whith wrong configurations" do
+      Application.put_all_env(
+        entrance: [
+          repo: FakeSuccessRepo,
+          user_module: Fake,
+          secure_with: Entrance.Auth.Bcrypt,
+          default_authenticable_field: nil
+        ]
+      )
+
+      assert_raise RuntimeError, ~r/You must add `default_authenticable_field` to `entrance`/, fn ->
+        Entrance.authenticate(@valid_email, "password")
+      end
     end
 
     test "takes invalid email and valid password and returns nil" do
@@ -62,7 +79,8 @@ defmodule EntranceTest do
         entrance: [
           repo: FakeSuccessRepo,
           user_module: Fake,
-          secure_with: Entrance.Auth.Bcrypt
+          secure_with: Entrance.Auth.Bcrypt,
+          default_authenticable_field: @default_authenticable_field
         ]
       )
 
@@ -74,7 +92,8 @@ defmodule EntranceTest do
         entrance: [
           repo: FakeSuccessRepo,
           user_module: Fake,
-          secure_with: Entrance.Auth.Bcrypt
+          secure_with: Entrance.Auth.Bcrypt,
+          default_authenticable_field: @default_authenticable_field
         ]
       )
 
@@ -86,7 +105,8 @@ defmodule EntranceTest do
         entrance: [
           repo: FakeSuccessRepo,
           user_module: Fake,
-          secure_with: Entrance.Auth.Bcrypt
+          secure_with: Entrance.Auth.Bcrypt,
+          default_authenticable_field: @default_authenticable_field
         ]
       )
 

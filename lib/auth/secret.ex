@@ -37,9 +37,8 @@ defmodule Entrance.Auth.Secret do
   @doc """
   Takes a changeset and adds a secure random string in the `session_secret` field.
   """
-  def put_session_secret(changeset, length \\ 64) do
-    Changeset.put_change(changeset, :session_secret, random_string(length))
-  end
+  def put_session_secret(changeset, length \\ 64),
+    do: Changeset.put_change(changeset, :session_secret, random_string(length))
 
   # Generate a secure random string
   defp random_string(length) do
