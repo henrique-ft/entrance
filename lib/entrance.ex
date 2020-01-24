@@ -5,11 +5,11 @@ defmodule Entrance do
   """
 
   @doc """
-  Authenticates a user by the default authenticable field (defined in config) and password. Returns the user if the
-  user is found and the password is correct, otherwise nil. For example, if the default authenticable field configured is :email, it will try match with the :email field of user schema.
+  Authenticates a user by the default authenticable field (defined in your configurations) and password. Returns the user if the
+  user is found and the password is correct, otherwise nil. For example, if the default authenticable field configured is `:email`, it will try match with the `:email` field of user schema.
 
   Requires `user_module`, `security_module`, `repo` and `default_authenticable_field` to be configured via
-  `Mix.Config`. See [README.md] for an example.
+  `Mix.Config`.
 
   ```
   Entrance.auth("joe@dirt.com", "brandyr00lz")
@@ -21,15 +21,15 @@ defmodule Entrance do
   Entrance.auth(Customer, "brandy@dirt.com", "super-password")
   ```
   """
-  def auth(user_module \\ nil, field, password),
-    do: auth_action(user_module, [{get_default_authenticable_field(), field}], password)
+  def auth(user_module \\ nil, field_value, password),
+    do: auth_action(user_module, [{get_default_authenticable_field(), field_value}], password)
 
   @doc """
   Similar to auth/2, but authenticates a user by one or more differents fields. Returns the user if the
   user is found and the password is correct, otherwise nil.
 
   Requires `user_module`, `security_module`, and `repo` to be configured via
-  `Mix.Config`. See [README.md] for an example.
+  `Mix.Config`.
 
   ```
   Entrance.auth_by([email: "joe@dirt.com", admin: true], "brandyr00lz")
@@ -41,8 +41,8 @@ defmodule Entrance do
   Entrance.auth_by(Customer, [nickname: "truehenrique", admin: true], "super-password")
   ```
   """
-  def auth_by(user_module \\ nil, fields, password) do
-    unless Keyword.keyword?(fields) do
+  def auth_by(user_module \\ nil, fields_values, password) do
+    unless Keyword.keyword?(fields_values) do
       raise """
       Entrance.authenticate_by/2 must receive a keyword list
 
@@ -53,17 +53,15 @@ defmodule Entrance do
       """
     end
 
-    auth_action(user_module, fields, password)
+    auth_action(user_module, fields_values, password)
   end
 
   @doc """
   Authenticates a user. Returns true if the user's password and the given
-  password match based on the strategy configured, otherwise false.
-
-  Use `auth/2` if if you would to authenticate by email and password.
+  password match based on the `security_module` strategy configured, otherwise false.
 
   Requires `user_module`, `security_module`, and `repo` to be configured via
-  `Mix.Config`. See [README.md] for an example.
+  `Mix.Config`.
 
   ```
   user = Myapp.Repo.get(Myapp.User, 1)
