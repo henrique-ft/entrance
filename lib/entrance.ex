@@ -21,22 +21,29 @@ defmodule Entrance do
   Entrance.authenticate(Customer, "brandy@dirt.com", "super-password")
   ```
   """
-
   def authenticate(user_module \\ nil, email, password) do
-    user_module = user_module || get_user_module()
-    user = repo_module().get_by(user_module, email: email)
+    authenticate_action(user_module, [email: email], password)
+  end
 
-    cond do
-      user && authenticate_user(user, password) ->
-        user
+  @doc """
+  Similar to authenticate/2, but can authenticates a user with differents fields, and even more than one field. Returns the user if the
+  user is found and the password is correct, otherwise nil.
 
-      user ->
-        nil
+  Requires `user_module`, `secure_with`, and `repo` to be configured via
+  `Mix.Config`. See [README.md] for an example.
 
-      true ->
-        auth_module().no_user_verify()
-        nil
-    end
+  ```
+  Entrance.authenticate_by([email: "joe@dirt.com", admin: true], "brandyr00lz")
+  ```
+
+  If you want to authenticate other modules, you can pass in the module directly.
+
+  ```
+  Entrance.authenticate_by(Customer, [nickname: "truehenrique", admin: true], "super-password")
+  ```
+  """
+  def authenticate_by(user_module \\ nil, fields, password) do
+    authenticate_action(user_module, fields, password)
   end
 
   @doc """
@@ -68,6 +75,34 @@ defmodule Entrance do
     conn.assigns[:current_user] != nil
   end
 
+  defp authenticate_action(user_module, fields, password) do
+    unless Keyword.keyword?(fields) do
+      raise """
+      authenticate_by/2 and authenticate_by/3 must receive a keyword list
+
+      Here is some examples:
+
+        Entrance.authenticate_by([email: "joe@dirt.com", admin: true], "brandyr00lz")
+        Entrance.authenticate_by(Customer, [email: "joe@dirt.com", admin: true], "brandyr00lz")
+      """
+    end
+
+    user_module = user_module || get_user_module()
+    user = repo_module().get_by(user_module, fields)
+
+    cond do
+      user && authenticate_user(user, password) ->
+        user
+
+      true ->
+        auth_module().no_user_verify()
+        nil
+
+      user ->
+        nil
+    end
+  end
+
   defp repo_module do
     get_module(:repo)
   end
@@ -91,7 +126,7 @@ defmodule Entrance do
           config :entrance,
             repo: MyApp.Repo,
             secure_with: Entrance.Auth.Bcrypt,
-            user_module: MyApp.User
+            authenticable_modules: [user: MyApp.User] # future updates
         """
 
       module ->
