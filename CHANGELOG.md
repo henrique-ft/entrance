@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.2.0] - 2020-01-24
+### Added
+- default_authenticable_field. Now it's possible to set any user schema field to be the default_authenticable_field in Entrance.auth/3 function
+- Entrance.auth_by/3 function. Now it's possible to authenticate using more than one field of user schema
+### Changed
+- Functions nomenclature from "authenticate" to "auth"
+- Do some code refactors
+- Make the Mix.Config nomenclature to a more legible. Example:
 
 ## [0.1.0] - 2020-01-23
 ### Added
