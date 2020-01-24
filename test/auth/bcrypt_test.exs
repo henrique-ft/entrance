@@ -39,14 +39,14 @@ defmodule Entrance.Auth.BcryptTest do
       password = "secure"
       user = %FakeUser{hashed_password: Bcrypt.hash_pwd_salt(password)}
 
-      assert EntranceBcrypt.authenticate(user, password)
+      assert EntranceBcrypt.auth(user, password)
     end
 
     test "authenticate returns false when password does not match" do
       password = "secure"
       user = %FakeUser{hashed_password: Bcrypt.hash_pwd_salt(password)}
 
-      refute EntranceBcrypt.authenticate(user, "wrong")
+      refute EntranceBcrypt.auth(user, "wrong")
     end
   end
 end

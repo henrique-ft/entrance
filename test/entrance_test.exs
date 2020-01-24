@@ -45,18 +45,18 @@ defmodule EntranceTest do
     end
   end
 
-  describe "Entrance.authenticate/3" do
+  describe "Entrance.auth/3" do
     test "takes valid email and valid password and returns true" do
       Application.put_all_env(
         entrance: [
           repo: FakeSuccessRepo,
           user_module: Fake,
-          secure_with: Entrance.Auth.Bcrypt,
+          security_module: Entrance.Auth.Bcrypt,
           default_authenticable_field: @default_authenticable_field
         ]
       )
 
-      assert Entrance.authenticate(@valid_email, "password").email == @valid_email
+      assert Entrance.auth(@valid_email, "password").email == @valid_email
     end
 
     test "raises error whith wrong configurations" do
@@ -64,14 +64,16 @@ defmodule EntranceTest do
         entrance: [
           repo: FakeSuccessRepo,
           user_module: Fake,
-          secure_with: Entrance.Auth.Bcrypt,
+          security_module: Entrance.Auth.Bcrypt,
           default_authenticable_field: nil
         ]
       )
 
-      assert_raise RuntimeError, ~r/You must add `default_authenticable_field` to `entrance`/, fn ->
-        Entrance.authenticate(@valid_email, "password")
-      end
+      assert_raise RuntimeError,
+                   ~r/You must add `default_authenticable_field` to `entrance`/,
+                   fn ->
+                     Entrance.auth(@valid_email, "password")
+                   end
     end
 
     test "takes invalid email and valid password and returns nil" do
@@ -79,12 +81,12 @@ defmodule EntranceTest do
         entrance: [
           repo: FakeSuccessRepo,
           user_module: Fake,
-          secure_with: Entrance.Auth.Bcrypt,
+          security_module: Entrance.Auth.Bcrypt,
           default_authenticable_field: @default_authenticable_field
         ]
       )
 
-      assert Entrance.authenticate("fake", "password") == nil
+      assert Entrance.auth("fake", "password") == nil
     end
 
     test "takes valid email and invalid password and returns nil" do
@@ -92,12 +94,12 @@ defmodule EntranceTest do
         entrance: [
           repo: FakeSuccessRepo,
           user_module: Fake,
-          secure_with: Entrance.Auth.Bcrypt,
+          security_module: Entrance.Auth.Bcrypt,
           default_authenticable_field: @default_authenticable_field
         ]
       )
 
-      assert Entrance.authenticate(@valid_email, "wrong") == nil
+      assert Entrance.auth(@valid_email, "wrong") == nil
     end
 
     test "takes an optional user module" do
@@ -105,20 +107,20 @@ defmodule EntranceTest do
         entrance: [
           repo: FakeSuccessRepo,
           user_module: Fake,
-          secure_with: Entrance.Auth.Bcrypt,
+          security_module: Entrance.Auth.Bcrypt,
           default_authenticable_field: @default_authenticable_field
         ]
       )
 
-      user = Entrance.authenticate(OtherFake, @valid_alternate_email, "password")
+      user = Entrance.auth(OtherFake, @valid_alternate_email, "password")
       assert user.email == @valid_alternate_email
     end
   end
 
-  describe "Entrance.authenticate_by/3" do
+  describe "Entrance.auth_by/3" do
     test "raise error when second params is not an keyword list" do
       assert_raise RuntimeError, ~r/must receive a keyword list/, fn ->
-        Entrance.authenticate_by("not a keyword list", "password")
+        Entrance.auth_by("not a keyword list", "password")
       end
     end
 
@@ -127,11 +129,11 @@ defmodule EntranceTest do
         entrance: [
           repo: FakeSuccessRepo,
           user_module: Fake,
-          secure_with: Entrance.Auth.Bcrypt
+          security_module: Entrance.Auth.Bcrypt
         ]
       )
 
-      assert Entrance.authenticate_by([email: @valid_email], "password").email == @valid_email
+      assert Entrance.auth_by([email: @valid_email], "password").email == @valid_email
     end
 
     test "takes invalid email and valid password and returns nil" do
@@ -139,11 +141,11 @@ defmodule EntranceTest do
         entrance: [
           repo: FakeSuccessRepo,
           user_module: Fake,
-          secure_with: Entrance.Auth.Bcrypt
+          security_module: Entrance.Auth.Bcrypt
         ]
       )
 
-      assert Entrance.authenticate_by([email: "fake"], "password") == nil
+      assert Entrance.auth_by([email: "fake"], "password") == nil
     end
 
     test "receives others fields for authentication match" do
@@ -151,11 +153,11 @@ defmodule EntranceTest do
         entrance: [
           repo: FakeSuccessRepo,
           user_module: Fake,
-          secure_with: Entrance.Auth.Bcrypt
+          security_module: Entrance.Auth.Bcrypt
         ]
       )
 
-      assert Entrance.authenticate_by(
+      assert Entrance.auth_by(
                [email: @valid_email, other_field: "some_value"],
                "password"
              ).email == @valid_email
@@ -168,11 +170,11 @@ defmodule EntranceTest do
         entrance: [
           repo: FakeSuccessRepo,
           user_module: Fake,
-          secure_with: Entrance.Auth.Bcrypt
+          security_module: Entrance.Auth.Bcrypt
         ]
       )
 
-      assert Entrance.authenticate_by([email: @valid_email], "wrong") == nil
+      assert Entrance.auth_by([email: @valid_email], "wrong") == nil
     end
 
     test "takes an optional user module" do
@@ -180,11 +182,11 @@ defmodule EntranceTest do
         entrance: [
           repo: FakeSuccessRepo,
           user_module: Fake,
-          secure_with: Entrance.Auth.Bcrypt
+          security_module: Entrance.Auth.Bcrypt
         ]
       )
 
-      user = Entrance.authenticate_by(OtherFake, [email: @valid_alternate_email], "password")
+      user = Entrance.auth_by(OtherFake, [email: @valid_alternate_email], "password")
       assert user.email == @valid_alternate_email
     end
   end
