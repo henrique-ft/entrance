@@ -51,17 +51,14 @@ defmodule Entrance.Auth.Bcrypt do
   end
 
   @doc """
-  Compares the given `password` against the given `user`'ss password.
+  Compares the given `password` against the given `user`'s password.
   """
-  def authenticate(user, password) do
-    Bcrypt.verify_pass(password, user.hashed_password)
-  end
+  def authenticate(user, password),
+    do: Bcrypt.verify_pass(password, user.hashed_password)
 
   @doc """
   Simulates password check to help prevent timing attacks. Delegates to
   `Bcrypt.no_user_verify/0`.
   """
-  def no_user_verify() do
-    Bcrypt.no_user_verify()
-  end
+  def no_user_verify(), do: Bcrypt.no_user_verify()
 end

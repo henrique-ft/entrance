@@ -21,9 +21,8 @@ defmodule Entrance do
   Entrance.authenticate(Customer, "brandy@dirt.com", "super-password")
   ```
   """
-  def authenticate(user_module \\ nil, email, password) do
-    authenticate_action(user_module, [email: email], password)
-  end
+  def authenticate(user_module \\ nil, email, password),
+    do: authenticate_action(user_module, [email: email], password)
 
   @doc """
   Similar to authenticate/2, but can authenticates a user with differents fields, and even more than one field. Returns the user if the
@@ -45,7 +44,7 @@ defmodule Entrance do
   def authenticate_by(user_module \\ nil, fields, password) do
     unless Keyword.keyword?(fields) do
       raise """
-      authenticate_by/2 and authenticate_by/3 must receive a keyword list
+      authenticate_by/3 must receive a keyword list
 
       Here is some examples:
 
@@ -71,9 +70,7 @@ defmodule Entrance do
   Entrance.authenticate_user(user, "brandyr00lz")
   ```
   """
-  def authenticate_user(user, password) do
-    auth_module().authenticate(user, password)
-  end
+  def authenticate_user(user, password), do: auth_module().authenticate(user, password)
 
   @doc """
   Returns true if passed in `conn`s `assigns` has a non-nil `:current_user`,
@@ -82,9 +79,7 @@ defmodule Entrance do
   Make sure your pipeline uses a login plug to fetch the current user for this
   function to work correctly..
   """
-  def logged_in?(conn) do
-    conn.assigns[:current_user] != nil
-  end
+  def logged_in?(conn), do: conn.assigns[:current_user] != nil
 
   defp authenticate_action(user_module, fields, password) do
     user_module = user_module || get_user_module()
@@ -103,17 +98,11 @@ defmodule Entrance do
     end
   end
 
-  defp repo_module do
-    get_module(:repo)
-  end
+  defp repo_module, do: get_module(:repo)
 
-  defp get_user_module do
-    get_module(:user_module)
-  end
+  defp get_user_module, do: get_module(:user_module)
 
-  defp auth_module do
-    get_module(:secure_with)
-  end
+  defp auth_module, do: get_module(:secure_with)
 
   defp get_module(name) do
     case Application.get_env(:entrance, name) do

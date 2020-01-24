@@ -35,90 +35,94 @@ defmodule Entrance.Login.SessionTest do
     end
   end
 
-  test "login/1 sets :user_id on conn.session", %{conn: conn} do
-    conn = Session.login(conn, %{id: 1, session_secret: "abc"})
+  describe "Session.login/1" do
+    test "sets :user_id on conn.session", %{conn: conn} do
+      conn = Session.login(conn, %{id: 1, session_secret: "abc"})
 
-    assert Plug.Conn.get_session(conn, :user_id) == 1
-    assert Plug.Conn.get_session(conn, :session_secret) == "abc"
+      assert Plug.Conn.get_session(conn, :user_id) == 1
+      assert Plug.Conn.get_session(conn, :session_secret) == "abc"
+    end
   end
 
-  test "get_current_user/1 returns user when exists", %{conn: conn} do
-    Application.put_all_env(entrance: [repo: FakeSuccessRepo, user_module: Fake])
+  describe "Session.get_current_user/1" do
+    test "returns user when exists", %{conn: conn} do
+      Application.put_all_env(entrance: [repo: FakeSuccessRepo, user_module: Fake])
 
-    conn =
-      conn
-      |> Plug.Conn.put_session(:user_id, @valid_id)
-      |> Plug.Conn.put_session(:session_secret, @valid_secret)
+      conn =
+        conn
+        |> Plug.Conn.put_session(:user_id, @valid_id)
+        |> Plug.Conn.put_session(:session_secret, @valid_secret)
 
-    assert Session.get_current_user(conn)
-  end
+      assert Session.get_current_user(conn)
+    end
 
-  test "get_current_user/1 accepts nil as a session_secret", %{conn: conn} do
-    Application.put_all_env(entrance: [repo: NilSuccessRepo, user_module: Fake])
+    test "accepts nil as a session_secret", %{conn: conn} do
+      Application.put_all_env(entrance: [repo: NilSuccessRepo, user_module: Fake])
 
-    conn =
-      conn
-      |> Plug.Conn.put_session(:user_id, @valid_id)
-      |> Plug.Conn.put_session(:session_secret, nil)
+      conn =
+        conn
+        |> Plug.Conn.put_session(:user_id, @valid_id)
+        |> Plug.Conn.put_session(:session_secret, nil)
 
-    assert Session.get_current_user(conn)
-  end
+      assert Session.get_current_user(conn)
+    end
 
-  test "get_current_user/1 won't accept just any session_secret just because this is set to nil",
-       %{conn: conn} do
-    Application.put_all_env(entrance: [repo: NilSuccessRepo, user_module: Fake])
+    test "won't accept just any session_secret just because this is set to nil",
+         %{conn: conn} do
+      Application.put_all_env(entrance: [repo: NilSuccessRepo, user_module: Fake])
 
-    conn =
-      conn
-      |> Plug.Conn.put_session(:user_id, @valid_id)
-      |> Plug.Conn.put_session(:session_secret, "abc")
+      conn =
+        conn
+        |> Plug.Conn.put_session(:user_id, @valid_id)
+        |> Plug.Conn.put_session(:session_secret, "abc")
 
-    refute Session.get_current_user(conn)
-  end
+      refute Session.get_current_user(conn)
+    end
 
-  test "get_current_user/1 won't accept a nil session_secret if this is not set to nil", %{
-    conn: conn
-  } do
-    Application.put_all_env(entrance: [repo: FakeSuccessRepo, user_module: Fake])
+    test "won't accept a nil session_secret if this is not set to nil", %{
+      conn: conn
+    } do
+      Application.put_all_env(entrance: [repo: FakeSuccessRepo, user_module: Fake])
 
-    conn =
-      conn
-      |> Plug.Conn.put_session(:user_id, @valid_id)
-      |> Plug.Conn.put_session(:session_secret, nil)
+      conn =
+        conn
+        |> Plug.Conn.put_session(:user_id, @valid_id)
+        |> Plug.Conn.put_session(:session_secret, nil)
 
-    refute Session.get_current_user(conn)
-  end
+      refute Session.get_current_user(conn)
+    end
 
-  test "get_current_user/1 returns nil when user does not exist", %{conn: conn} do
-    Application.put_all_env(entrance: [repo: FakeSuccessRepo, user_module: Fake])
+    test "returns nil when user does not exist", %{conn: conn} do
+      Application.put_all_env(entrance: [repo: FakeSuccessRepo, user_module: Fake])
 
-    conn =
-      conn
-      |> Plug.Conn.put_session(:user_id, @invalid_id)
-      |> Plug.Conn.put_session(:session_secret, @valid_secret)
+      conn =
+        conn
+        |> Plug.Conn.put_session(:user_id, @invalid_id)
+        |> Plug.Conn.put_session(:session_secret, @valid_secret)
 
-    refute Session.get_current_user(conn)
-  end
+      refute Session.get_current_user(conn)
+    end
 
-  test "get_current_user/1 returns nil when session_key does not match", %{conn: conn} do
-    Application.put_all_env(entrance: [repo: FakeSuccessRepo, user_module: Fake])
+    test "returns nil when session_key does not match", %{conn: conn} do
+      Application.put_all_env(entrance: [repo: FakeSuccessRepo, user_module: Fake])
 
-    conn =
-      conn
-      |> Plug.Conn.put_session(:user_id, @valid_id)
-      |> Plug.Conn.put_session(:session_secret, @invalid_secret)
+      conn =
+        conn
+        |> Plug.Conn.put_session(:user_id, @valid_id)
+        |> Plug.Conn.put_session(:session_secret, @invalid_secret)
 
-    refute Session.get_current_user(conn)
-  end
+      refute Session.get_current_user(conn)
+    end
 
-  test "get_current_user/1 returns nil when session_key and id do not match", %{conn: conn} do
-    Application.put_all_env(entrance: [repo: FakeSuccessRepo, user_module: Fake])
+    test "returns nil when session_key and id do not match", %{conn: conn} do
+      Application.put_all_env(entrance: [repo: FakeSuccessRepo, user_module: Fake])
 
-    conn =
-      conn
-      |> Plug.Conn.put_session(:user_id, @invalid_id)
-      |> Plug.Conn.put_session(:session_secret, @invalid_secret)
+      conn =
+        conn
+        |> Plug.Conn.put_session(:user_id, @invalid_id)
+        |> Plug.Conn.put_session(:session_secret, @invalid_secret)
 
-    refute Session.get_current_user(conn)
+      refute Session.get_current_user(conn)
+    end
   end
 end
