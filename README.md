@@ -4,6 +4,8 @@
 ![License](https://img.shields.io/github/license/henriquefernandez/entrance?style=flat-square)
 ![Code Size](https://img.shields.io/github/languages/code-size/henriquefernandez/entrance?style=flat-square)
 
+![Entrance](https://www.truehenrique.com/images/entrance_logo.png)
+
 Modules and functions to make authentication with *Plug / Phoenix* and *Ecto* easy without tons of configuration or boxing users into rigid and bloated framework.
  
 The primary goal of *Entrance* is to build an opinionated interface and easy to use API on top of flexible modules that can also be used directly.
