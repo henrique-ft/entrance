@@ -1,10 +1,14 @@
 # Entrance
 
-![Version](https://img.shields.io/badge/hex-v0.2.0-green)
+![Version](https://img.shields.io/hexpm/v/entrance?style=flat-square)
+![License](https://img.shields.io/github/license/henriquefernandez/entrance?style=flat-square)
+![Code Size](https://img.shields.io/github/languages/code-size/henriquefernandez/entrance?style=flat-square)
 
-Modules and functions to make authentication with *Plug / Phoenix* and *Ecto* easy without tons of configuration or boxing users into rigid framework.
+Modules and functions to make authentication with *Plug / Phoenix* and *Ecto* easy without tons of configuration or boxing users into rigid and bloated framework.
  
 The primary goal of *Entrance* is to build an opinionated interface and easy to use API on top of flexible modules that can also be used directly.
+
+If you like simple and beautiful code, you'd like *Entrance*.
 
 You can find more in-depth [documentation here](https://hexdocs.pm/entrance/Entrance.html#content)
 
@@ -88,7 +92,7 @@ Finally, we can add our plug so we can have access to *current_user* on `conn.as
 
 #### Creating Users
 
-To create a user we can use the `YourApp.Accounts.User.create_changeset/2` function we defined. Here we'll also add the `session_secret` to the user, which is only needed when creating an user or in case of compromised sessions.
+To create a user we can use the `User.changeset/2` function we defined. Here we'll also add the `session_secret` to the user, which is only needed when creating an user or in case of compromised sessions.
 
 ```elixir
 defmodule YourAppWeb.UserController do
@@ -236,7 +240,7 @@ end
 
 #### Testing
 
-You can easily test an route that require authentication following the example below:
+You can easily test routes that require authentication following the example below:
 
 ```elixir
 defmodule YourAppWeb.PageControllerTest do
