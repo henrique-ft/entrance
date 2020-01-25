@@ -1,20 +1,32 @@
 # Entrance
 
-Entrance is a modern, updated and maintained version of [Doorman](https://github.com/BlakeWilliams/doorman). 
+![Version](https://img.shields.io/badge/hex-v0.2.0-green)
 
-> Modules and functions to make authentication with Plug/Phoenix and Ecto easy without tons of configuration or boxing users into rigid framework.
-> 
-> The primary goal is to build an opinionated interface and easy to use API on top of flexible modules that can also be used directly.
+Modules and functions to make authentication with *Plug / Phoenix* and *Ecto* easy without tons of configuration or boxing users into rigid framework.
+ 
+The primary goal of *Entrance* is to build an opinionated interface and easy to use API on top of flexible modules that can also be used directly.
 
-You can find more in-depth [documentation here](https://hexdocs.pm/entrance/)
+You can find more in-depth [documentation here](https://hexdocs.pm/entrance/Entrance.html#content)
 
-## Installation
+## Table of contents
+
+- [Installation](#installation)
+- [Phoenix](#phoenix)
+    - [Creating users](#creating-users)
+    - [Logging in users](#logging-in-users)
+    - [Requiring Authentication](#requiring-authentication)
+    - [Logging out users](#logging-out-users)
+    - [Testing](#testing)
+- [Contribute](#contribute)
+- [Credits](#credits)
+
+### Installation
 
 Add entrance to your dependencies in `mix.exs`.
 
 ```elixir
 def deps do
-  [{:entrance, "~> 0.1.0"}]
+  [{:entrance, "~> 0.2.0"}]
 end
 ```
 
@@ -27,7 +39,7 @@ config :entrance,
   user_module: YourApp.Accounts.User,
   default_authenticable_field: :email
 ```
-## Phoenix Quick Start
+### Phoenix
 
 First, generate a user schema with a `hashed_password:string` and `session_secret:string` field:
 
@@ -64,7 +76,7 @@ defmodule YourApp.Accounts.User do
 end
 ```
 
-Finally, we can add our plug so we can have access to `current_user` on `conn.assigns[:current_user]`. 99% of the time that means adding the `Entrance.Login.Session` plug to your `:browser` pipeline:
+Finally, we can add our plug so we can have access to *current_user* on `conn.assigns[:current_user]`. 99% of the time that means adding the `Entrance.Login.Session` plug to your `:browser` pipeline:
 
 ```elixir
   pipeline :browser do
@@ -74,7 +86,7 @@ Finally, we can add our plug so we can have access to `current_user` on `conn.as
   end 
 ```
 
-### Creating Users
+#### Creating Users
 
 To create a user we can use the `YourApp.Accounts.User.create_changeset/2` function we defined. Here we'll also add the `session_secret` to the user, which is only needed when creating an user or in case of compromised sessions.
 
@@ -107,7 +119,7 @@ defmodule YourAppWeb.UserController do
 end  
 ```
 
-### Logging in users
+#### Logging in users
 
 To login users we can use `Entrance.auth` and `Entrance.Login.Session.login/2`.
 
@@ -143,9 +155,9 @@ Entrance.auth_by([email: email, admin: true], password)
 
 *Note: In this README example, we did not create the `:admin` field in `Accounts.User` schema*
 
-Read more about `Entrance` "auth functions" variations [here](https://hexdocs.pm/entrance/Entrance.html#content), and find what can fit more to your needs.
+Read more about *Entrance* "auth functions" variations [here](https://hexdocs.pm/entrance/Entrance.html#content), and find what can fit more to your needs.
 
-### Requiring Authentication
+#### Requiring Authentication
 
 To require a user to be authenticated you can build a simple plug around `Entrance.logged_in?/1`.
 
@@ -186,7 +198,7 @@ end
 # ...
 ```
 
-### Logout users
+#### Logging out users
 
 To logout users we can use `Entrance.Login.Session.logout/1`
 
@@ -222,6 +234,72 @@ defmodule YourAppWeb.SessionController do
 end 
 ```
 
+#### Testing
+
+You can easily test an route that require authentication following the example below:
+
+```elixir
+defmodule YourAppWeb.PageControllerTest do
+  use YourAppWeb.ConnCase
+
+  import Entrance.Login.Session, only: [login: 2] # Add this line
+
+  alias Entrance.Auth.Secret # And this line
+  alias YourApp.Accounts.User
+  alias YourApp.Repo
+
+  # Setup an logged_in_conn
+  setup do
+    changeset =
+      %User{}
+      |> User.changeset(%{email: "test@test.com", password: "test"})
+      |> Secret.put_session_secret()
+
+    {:ok, user} = Repo.insert(changeset)
+
+    opts =
+      Plug.Session.init(
+        store: :cookie,
+        key: "test_key",
+        encryption_salt: "test_encryption_salt",
+        signing_salt: "test_signing_salt",
+        log: false,
+        encrypt: false
+      )
+
+    logged_in_conn =
+      build_conn()
+      |> Plug.Session.call(opts)
+      |> fetch_session()
+      |> login(user)
+
+    %{logged_in_conn: logged_in_conn}
+  end
+
+  test "GET /secret", %{logged_in_conn: logged_in_conn} do
+    response =
+      logged_in_conn
+      |> get("/secret")
+
+    assert html_response(response, 200) # Yeah, it passes!
+  end
+end
+```
+
 ## Contribute
 
-I'm totally open to new ideas. Fork, open issues and feel free to contribute.
+I'm totally open to new ideas. Fork, open issues and feel free to contribute with no bureaucracy. We only need to keep some patterns to maintain an organization:
+
+#### branchs
+
+*your_branch_name*
+
+#### commits
+
+*[your_branch_name] Your commit*
+
+## Credits
+
+Entrance was built upon [Doorman](https://github.com/BlakeWilliams/doorman). 
+
+Thanks to [Blake Williams](https://github.com/BlakeWilliams) & [Ashley Foster](https://github.com/AshleyFoster)
