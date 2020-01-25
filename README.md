@@ -10,7 +10,7 @@ The primary goal of *Entrance* is to build an opinionated interface and easy to 
 
 If you like simple and beautiful code, you'd like *Entrance*.
 
-You can find more in-depth [documentation here](https://hexdocs.pm/entrance/Entrance.html#content)
+You can find more in-depth [documentation here](https://hexdocs.pm/entrance/Entrance.html#content). 
 
 ## Table of contents
 
@@ -34,7 +34,7 @@ def deps do
 end
 ```
 
-Then add the configuration to `config/config.exs`
+Then add the configuration to *[your_app/config/config.exs](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/config/config.exs)*
 
 ```elixir
 config :entrance,              
@@ -55,6 +55,7 @@ Run the migrations:
 
 Next, use `Entrance.Auth.Bcrypt` in your new `User` module and add a virtual `:password` field. `hash_password/1` is used in the changeset to hash our password and put it into the changeset as `:hashed_password`.
 
+*[your_app/lib/your_app/accounts/user.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app/accounts/user.ex)*
 ```elixir
 defmodule YourApp.Accounts.User do
   use Ecto.Schema
@@ -82,6 +83,7 @@ end
 
 Finally, we can add our plug so we can have access to *current_user* on `conn.assigns[:current_user]`. 99% of the time that means adding the `Entrance.Login.Session` plug to your `:browser` pipeline:
 
+*[your_app/lib/your_app_web/router.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/router.ex)*
 ```elixir
   pipeline :browser do
     # ...
@@ -94,6 +96,7 @@ Finally, we can add our plug so we can have access to *current_user* on `conn.as
 
 To create a user we can use the `User.changeset/2` function we defined. Here we'll also add the `session_secret` to the user, which is only needed when creating an user or in case of compromised sessions.
 
+*[your_app/lib/your_app_web/controllers/user_controller.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/controllers/user_controller.ex)*
 ```elixir
 defmodule YourAppWeb.UserController do
   use YourAppWeb, :controller
@@ -127,6 +130,7 @@ end
 
 To login users we can use `Entrance.auth` and `Entrance.Login.Session.login/2`.
 
+*[your_app/lib/your_app_web/controllers/session_controller.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/controllers/session_controller.ex)*
 ```elixir
 defmodule YourAppWeb.SessionController do
   use YourAppWeb, :controller
@@ -165,6 +169,7 @@ Read more about *Entrance* "auth functions" variations [here](https://hexdocs.pm
 
 To require a user to be authenticated you can build a simple plug around `Entrance.logged_in?/1`.
 
+*[your_app/lib/your_app_web/plugs/require_login.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/plugs/require_login.ex)*
 ```elixir
 defmodule YourApp.Plugs.RequireLogin do
   import Plug.Conn
@@ -183,7 +188,7 @@ defmodule YourApp.Plugs.RequireLogin do
 end
 ```
 
-An example in *your_app/lib/your_app_web/router.ex*:
+An example in *[your_app/lib/your_app_web/router.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/router.ex)*:
 
 ```elixir
 pipeline :secret do
@@ -206,6 +211,7 @@ end
 
 To logout users we can use `Entrance.Login.Session.logout/1`
 
+*[your_app/lib/your_app_web/controllers/session_controller.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/controllers/session_controller.ex)*
 ```elixir
 defmodule YourAppWeb.SessionController do 
   use YourAppWeb, :controller  
@@ -242,6 +248,7 @@ end
 
 You can easily test routes that require authentication following the example below:
 
+*[your_app/test/your_app_web/controllers/page_controller_test.exs](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/test/your_app_web/controllers/page_controller_test.exs)*
 ```elixir
 defmodule YourAppWeb.PageControllerTest do
   use YourAppWeb.ConnCase
