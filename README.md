@@ -1,10 +1,10 @@
+![Entrance](https://www.truehenrique.com/images/entrance_logo.png)
+
 # Entrance
 
 ![Version](https://img.shields.io/hexpm/v/entrance?style=flat-square)
 ![License](https://img.shields.io/github/license/henriquefernandez/entrance?style=flat-square)
 ![Code Size](https://img.shields.io/github/languages/code-size/henriquefernandez/entrance?style=flat-square)
-
-![Entrance](https://www.truehenrique.com/images/entrance_logo.png)
 
 Modules and functions to make authentication with *Plug / Phoenix* and *Ecto* easy without tons of configuration or boxing users into rigid and bloated framework.
  
