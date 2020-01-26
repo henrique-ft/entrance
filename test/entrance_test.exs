@@ -2,9 +2,11 @@ defmodule EntranceTest do
   use Entrance.ConnCase
   doctest Entrance
 
-  @default_authenticable_field :email
   @valid_email "joe@dirt.com"
   @valid_alternate_email "brandy@dirt.com"
+  @valid_nickname "truehenrique"
+  @valid_alternate_nickname "joe"
+  @default_authenticable_field :email
 
   defmodule FakeSuccessRepo do
     def get_by(OtherFake, email: "brandy@dirt.com") do
@@ -14,12 +16,32 @@ defmodule EntranceTest do
       }
     end
 
+    def get_by(OtherFake, nickname: "joe") do
+      %{
+        nickname: "joe",
+        hashed_password: Bcrypt.hash_pwd_salt("password")
+      }
+    end
+
+    def get_by(OtherFake, nickname: _nickname), do: nil
+
+    def get_by(OtherFake, email: _email), do: nil
+
     def get_by(Fake, email: "joe@dirt.com") do
       %{
         email: "joe@dirt.com",
         hashed_password: Bcrypt.hash_pwd_salt("password")
       }
     end
+
+    def get_by(Fake, nickname: "truehenrique") do
+      %{
+        nickname: "truehenrique",
+        hashed_password: Bcrypt.hash_pwd_salt("password")
+      }
+    end
+
+    def get_by(Fake, nickname: _nickname), do: nil
 
     def get_by(Fake, email: _email), do: nil
 
@@ -188,6 +210,50 @@ defmodule EntranceTest do
 
       user = Entrance.auth_by(OtherFake, [email: @valid_alternate_email], "password")
       assert user.email == @valid_alternate_email
+    end
+  end
+
+  describe "Entrance.auth_one/3" do
+    test "takes valid email, valid password and invalid nickname and returns true" do
+      Application.put_all_env(
+        entrance: [
+          repo: FakeSuccessRepo,
+          user_module: Fake,
+          security_module: Entrance.Auth.Bcrypt
+        ]
+      )
+
+      assert Entrance.auth_one([:email, :nickname], @valid_email, "password").email ==
+               @valid_email
+    end
+
+    test "takes invalid email, valid password and valid nickname and returns true" do
+      Application.put_all_env(
+        entrance: [
+          repo: FakeSuccessRepo,
+          user_module: Fake,
+          security_module: Entrance.Auth.Bcrypt
+        ]
+      )
+
+      assert Entrance.auth_one([:email, :nickname], @valid_nickname, "password").nickname ==
+               @valid_nickname
+    end
+
+    test "takes an optional user module" do
+      Application.put_all_env(
+        entrance: [
+          repo: FakeSuccessRepo,
+          user_module: Fake,
+          security_module: Entrance.Auth.Bcrypt,
+          default_authenticable_field: @default_authenticable_field
+        ]
+      )
+
+      user =
+        Entrance.auth_one(OtherFake, [:email, :nickname], @valid_alternate_nickname, "password")
+
+      assert user.nickname == @valid_alternate_nickname
     end
   end
 

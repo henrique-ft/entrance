@@ -1,11 +1,13 @@
 defmodule Entrance do
+  import Ecto.Query, only: [from: 2, or_where: 3, where: 3]
+
   @moduledoc """
   Provides authentication helpers that take advantage of the options configured
   in your config files.
   """
 
   @doc """
-  Authenticates a user by the default authenticable field (defined in your configurations) and password. Returns the user if the
+  Authenticates an user by the default authenticable field (defined in your configurations) and password. Returns the user if the
   user is found and the password is correct, otherwise nil. For example, if the default authenticable field configured is `:email`, it will try match with the `:email` field of user schema.
 
   Requires `user_module`, `security_module`, `repo` and `default_authenticable_field` to be configured via
@@ -25,7 +27,7 @@ defmodule Entrance do
     do: auth_action(user_module, [{get_default_authenticable_field(), field_value}], password)
 
   @doc """
-  Similar to auth/2, but authenticates a user by one or more differents fields. Returns the user if the
+  Authenticates an user by checking more than one field. Returns the user if the
   user is found and the password is correct, otherwise nil.
 
   Requires `user_module`, `security_module`, and `repo` to be configured via
@@ -44,16 +46,40 @@ defmodule Entrance do
   def auth_by(user_module \\ nil, fields_values, password) do
     unless Keyword.keyword?(fields_values) do
       raise """
-      Entrance.authenticate_by/2 must receive a keyword list
+      Entrance.auth_by/2 must receive a keyword list
 
       Here is some examples:
 
-        Entrance.authenticate_by([email: "joe@dirt.com", admin: true], "brandyr00lz")
-        Entrance.authenticate_by(Customer, [email: "joe@dirt.com", admin: true], "brandyr00lz")
+        Entrance.auth_by([email: "joe@dirt.com", admin: true], "brandyr00lz")
+        Entrance.auth_by(Customer, [email: "joe@dirt.com", admin: true], "brandyr00lz")
       """
     end
 
     auth_action(user_module, fields_values, password)
+  end
+
+  @doc """
+  Authenticates a user by at least one field in the fields list. Returns the user if the
+  user is found and the password is correct, otherwise nil.
+
+  Requires `user_module`, `security_module`, and `repo` to be configured via
+  `Mix.Config`.
+
+  ```
+  Entrance.auth_one([:email, :nickname], "my-nickname", "my-password")
+  ```
+
+  If you want to authenticate other modules, you can pass in the module directly.
+
+  ```
+  Entrance.auth_one(Customer, [:nickname, :email], "my@email.com", "my-password")
+  ```
+  """
+  def auth_one(user_module \\ nil, fields, value, password) do
+    Enum.find_value(fields, fn field ->
+      result = auth_action(user_module, [{field, value}], password)
+      if result != nil, do: result
+    end)
   end
 
   @doc """
