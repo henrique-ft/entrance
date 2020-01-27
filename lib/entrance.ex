@@ -94,6 +94,48 @@ defmodule Entrance do
   end
 
   @doc """
+  Receives an atom list as fields list, a value and a password. Authenticates a user by at least one field in the fields list. Returns the user if the
+  user is found and the password is correct, otherwise nil.
+
+  Requires `user_module`, `security_module`, and `repo` to be configured via
+  `Mix.Config`.
+
+  ```
+  Entrance.auth_one_by({[:email, :nickname], "value"}, [admin: true] , "my-password")
+  ```
+
+  If you want to authenticate other modules, you can pass in the module directly.
+
+  ```
+  Entrance.auth_one_by(Customer, {[:email, :nickname], "value"}, [admin: true], "my-password")
+  ```
+  """
+  def auth_one_by(
+        user_module \\ nil,
+        {[first_field | fields], value},
+        extra_fields_values,
+        password
+      ) do
+    user_module = user_module || get_user_module()
+
+    user =
+      Enum.reduce(fields, from(um in user_module, where: ^[{first_field, value}]), fn field,
+                                                                                      query ->
+        or_where(query, [um], ^[{field, value}])
+      end)
+      |> repo_module().one()
+
+    if user != nil &&
+         Enum.all?(extra_fields_values, fn {extra_field, extra_value} ->
+           Map.get(user, extra_field) == extra_value
+         end) do
+      auth_result(user, password)
+    else
+      auth_result(nil, password)
+    end
+  end
+
+  @doc """
   Authenticates a user. Returns true if the user's password and the given
   password match based on the `security_module` strategy configured, otherwise false.
 

@@ -55,6 +55,7 @@ defmodule EntranceTest do
           ]
         }) do
       %{
+        admin: true,
         email: "joe@dirt.com",
         nickname: "truehenrique",
         hashed_password: Bcrypt.hash_pwd_salt("password")
@@ -68,6 +69,7 @@ defmodule EntranceTest do
           ]
         }) do
       %{
+        admin: true,
         email: "joe@dirt.com",
         nickname: "truehenrique",
         hashed_password: Bcrypt.hash_pwd_salt("password")
@@ -286,6 +288,101 @@ defmodule EntranceTest do
       user = Entrance.auth_one(FakeSchema, [:email, :nickname], @valid_nickname, "password")
 
       assert user.nickname == @valid_nickname
+    end
+  end
+
+  describe "Entrance.auth_one_by/3" do
+    test "takes valid email, valid password, invalid nickname, for an admin == true and returns true" do
+      Application.put_all_env(
+        entrance: [
+          repo: FakeSuccessRepo,
+          user_module: FakeSchema,
+          security_module: Entrance.Auth.Bcrypt
+        ]
+      )
+
+      assert Entrance.auth_one_by({[:email, :nickname], @valid_email}, [admin: true], "password").email ==
+               @valid_email
+    end
+
+    test "takes invalid email, valid password, valid nickname, for an admin == true and returns true" do
+      Application.put_all_env(
+        entrance: [
+          repo: FakeSuccessRepo,
+          user_module: FakeSchema,
+          security_module: Entrance.Auth.Bcrypt
+        ]
+      )
+
+      assert Entrance.auth_one_by(
+               {[:email, :nickname], @valid_nickname},
+               [admin: true],
+               "password"
+             ).nickname ==
+               @valid_nickname
+    end
+
+    test "takes valid email, valid password, invalid nickname, for an admin == false and returns nil" do
+      Application.put_all_env(
+        entrance: [
+          repo: FakeSuccessRepo,
+          user_module: FakeSchema,
+          security_module: Entrance.Auth.Bcrypt
+        ]
+      )
+
+      assert Entrance.auth_one_by({[:email, :nickname], @valid_email}, [admin: false], "password") ==
+               nil
+    end
+
+    test "takes invalid email, valid password, invalid nickname, for an admin == true and returns nil" do
+      Application.put_all_env(
+        entrance: [
+          repo: FakeSuccessRepo,
+          user_module: FakeSchema,
+          security_module: Entrance.Auth.Bcrypt
+        ]
+      )
+
+      assert Entrance.auth_one_by(
+               {[:email, :nickname], "i'm invalid"},
+               [admin: false],
+               "password"
+             ) == nil
+    end
+
+    test "takes valid email, invalid password, invalid nickname, for an admin == true and returns nil" do
+      Application.put_all_env(
+        entrance: [
+          repo: FakeSuccessRepo,
+          user_module: FakeSchema,
+          security_module: Entrance.Auth.Bcrypt
+        ]
+      )
+
+      assert Entrance.auth_one_by(
+               {[:email, :nickname], @valid_email},
+               [admin: true],
+               "invalid password"
+             ) == nil
+    end
+
+    test "takes an optional user module" do
+      Application.put_all_env(
+        entrance: [
+          repo: FakeSuccessRepo,
+          user_module: OtherFake,
+          security_module: Entrance.Auth.Bcrypt
+        ]
+      )
+
+      assert Entrance.auth_one_by(
+               FakeSchema,
+               {[:email, :nickname], @valid_email},
+               [admin: true],
+               "password"
+             ).email ==
+               @valid_email
     end
   end
 
