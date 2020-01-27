@@ -143,7 +143,7 @@ defmodule Entrance do
           config :entrance,
             repo: MyApp.Repo,
             security_module: Entrance.Auth.Bcrypt,
-            user_module: MyApp.User,
+            user_module: MyApp.Accounts.User,
             default_authenticable_field: :email
         """
 
