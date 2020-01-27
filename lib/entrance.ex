@@ -85,7 +85,8 @@ defmodule Entrance do
     repo = repo_module()
 
     Enum.find_value(fields, fn field ->
-      repo.get_by(user_module, [{field, value}])
+      user_module
+      |> repo.get_by([{field, value}])
       |> auth_result(password)
     end)
   end
