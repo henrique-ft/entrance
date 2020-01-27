@@ -240,6 +240,18 @@ defmodule EntranceTest do
                @valid_nickname
     end
 
+    test "takes invalid email, valid password and invalid nickname and returns nil" do
+      Application.put_all_env(
+        entrance: [
+          repo: FakeSuccessRepo,
+          user_module: Fake,
+          security_module: Entrance.Auth.Bcrypt
+        ]
+      )
+
+      assert Entrance.auth_one([:email, :nickname], "i'm invalid", "password") == nil
+    end
+
     test "takes an optional user module" do
       Application.put_all_env(
         entrance: [

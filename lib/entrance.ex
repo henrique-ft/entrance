@@ -1,6 +1,4 @@
 defmodule Entrance do
-  import Ecto.Query, only: [from: 2, or_where: 3, where: 3]
-
   @moduledoc """
   Provides authentication helpers that take advantage of the options configured
   in your config files.
@@ -23,8 +21,12 @@ defmodule Entrance do
   Entrance.auth(Customer, "brandy@dirt.com", "super-password")
   ```
   """
-  def auth(user_module \\ nil, field_value, password),
-    do: auth_action(user_module, [{get_default_authenticable_field(), field_value}], password)
+  def auth(user_module \\ nil, field_value, password) do
+    user_module = user_module || get_user_module()
+    user = repo_module().get_by(user_module, [{default_authenticable_field(), field_value}])
+
+    auth_result(user, password)
+  end
 
   @doc """
   Authenticates an user by checking more than one field. Returns the user if the
@@ -55,11 +57,14 @@ defmodule Entrance do
       """
     end
 
-    auth_action(user_module, fields_values, password)
+    user_module = user_module || get_user_module()
+    user = repo_module().get_by(user_module, fields_values)
+
+    auth_result(user, password)
   end
 
   @doc """
-  Authenticates a user by at least one field in the fields list. Returns the user if the
+  Receives an atom list as fields list, a value and a password. Authenticates a user by at least one field in the fields list. Returns the user if the
   user is found and the password is correct, otherwise nil.
 
   Requires `user_module`, `security_module`, and `repo` to be configured via
@@ -76,9 +81,12 @@ defmodule Entrance do
   ```
   """
   def auth_one(user_module \\ nil, fields, value, password) do
+    user_module = user_module || get_user_module()
+    repo = repo_module()
+
     Enum.find_value(fields, fn field ->
-      result = auth_action(user_module, [{field, value}], password)
-      if result != nil, do: result
+      repo.get_by(user_module, [{field, value}])
+      |> auth_result(password)
     end)
   end
 
@@ -105,19 +113,13 @@ defmodule Entrance do
   """
   def logged_in?(conn), do: conn.assigns[:current_user] != nil
 
-  defp auth_action(user_module, fields, password) do
-    user_module = user_module || get_user_module()
-    user = repo_module().get_by(user_module, fields)
-
+  defp auth_result(user, password) do
     cond do
       user && auth_user(user, password) ->
         user
 
       true ->
         security_module().no_user_verify()
-        nil
-
-      user ->
         nil
     end
   end
@@ -128,7 +130,7 @@ defmodule Entrance do
 
   defp security_module, do: get_module(:security_module)
 
-  defp get_default_authenticable_field, do: get_module(:default_authenticable_field)
+  defp default_authenticable_field, do: get_module(:default_authenticable_field)
 
   defp get_module(name) do
     case Application.get_env(:entrance, name) do
