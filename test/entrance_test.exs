@@ -5,8 +5,19 @@ defmodule EntranceTest do
   @valid_email "joe@dirt.com"
   @valid_alternate_email "brandy@dirt.com"
   @valid_nickname "truehenrique"
-  @valid_alternate_nickname "joe"
   @default_authenticable_field :email
+
+  defmodule FakeSchema do
+    use Ecto.Schema
+
+    schema "users" do
+      field(:email, :string)
+      field(:nickname, :string)
+      field(:other_field, :string)
+      field(:password, :string, virtual: true)
+      field(:hashed_password, :string)
+    end
+  end
 
   defmodule FakeSuccessRepo do
     def get_by(OtherFake, email: "brandy@dirt.com") do
@@ -16,15 +27,6 @@ defmodule EntranceTest do
       }
     end
 
-    def get_by(OtherFake, nickname: "joe") do
-      %{
-        nickname: "joe",
-        hashed_password: Bcrypt.hash_pwd_salt("password")
-      }
-    end
-
-    def get_by(OtherFake, nickname: _nickname), do: nil
-
     def get_by(OtherFake, email: _email), do: nil
 
     def get_by(Fake, email: "joe@dirt.com") do
@@ -33,15 +35,6 @@ defmodule EntranceTest do
         hashed_password: Bcrypt.hash_pwd_salt("password")
       }
     end
-
-    def get_by(Fake, nickname: "truehenrique") do
-      %{
-        nickname: "truehenrique",
-        hashed_password: Bcrypt.hash_pwd_salt("password")
-      }
-    end
-
-    def get_by(Fake, nickname: _nickname), do: nil
 
     def get_by(Fake, email: _email), do: nil
 
@@ -54,6 +47,34 @@ defmodule EntranceTest do
         hashed_password: Bcrypt.hash_pwd_salt("password")
       }
     end
+
+    def one(%Ecto.Query{
+          wheres: [
+            %{params: [{"truehenrique", {0, :email}}]},
+            %{params: [{"truehenrique", {0, :nickname}}], op: :or}
+          ]
+        }) do
+      %{
+        email: "joe@dirt.com",
+        nickname: "truehenrique",
+        hashed_password: Bcrypt.hash_pwd_salt("password")
+      }
+    end
+
+    def one(%Ecto.Query{
+          wheres: [
+            %{params: [{"joe@dirt.com", {0, :email}}]},
+            %{params: [{"joe@dirt.com", {0, :nickname}}], op: :or}
+          ]
+        }) do
+      %{
+        email: "joe@dirt.com",
+        nickname: "truehenrique",
+        hashed_password: Bcrypt.hash_pwd_salt("password")
+      }
+    end
+
+    def one(_ecto_query), do: nil
 
     def get(Fake, id) do
       if id == 1 do
@@ -218,7 +239,7 @@ defmodule EntranceTest do
       Application.put_all_env(
         entrance: [
           repo: FakeSuccessRepo,
-          user_module: Fake,
+          user_module: FakeSchema,
           security_module: Entrance.Auth.Bcrypt
         ]
       )
@@ -231,7 +252,7 @@ defmodule EntranceTest do
       Application.put_all_env(
         entrance: [
           repo: FakeSuccessRepo,
-          user_module: Fake,
+          user_module: FakeSchema,
           security_module: Entrance.Auth.Bcrypt
         ]
       )
@@ -244,7 +265,7 @@ defmodule EntranceTest do
       Application.put_all_env(
         entrance: [
           repo: FakeSuccessRepo,
-          user_module: Fake,
+          user_module: FakeSchema,
           security_module: Entrance.Auth.Bcrypt
         ]
       )
@@ -256,16 +277,15 @@ defmodule EntranceTest do
       Application.put_all_env(
         entrance: [
           repo: FakeSuccessRepo,
-          user_module: Fake,
+          user_module: OtherFake,
           security_module: Entrance.Auth.Bcrypt,
           default_authenticable_field: @default_authenticable_field
         ]
       )
 
-      user =
-        Entrance.auth_one(OtherFake, [:email, :nickname], @valid_alternate_nickname, "password")
+      user = Entrance.auth_one(FakeSchema, [:email, :nickname], @valid_nickname, "password")
 
-      assert user.nickname == @valid_alternate_nickname
+      assert user.nickname == @valid_nickname
     end
   end
 

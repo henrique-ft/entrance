@@ -1,4 +1,6 @@
 defmodule Entrance do
+  import Ecto.Query
+
   @moduledoc """
   Provides authentication helpers that take advantage of the options configured
   in your config files.
@@ -80,15 +82,15 @@ defmodule Entrance do
   Entrance.auth_one(Customer, [:nickname, :email], "my@email.com", "my-password")
   ```
   """
-  def auth_one(user_module \\ nil, fields, value, password) do
+  def auth_one(user_module \\ nil, [first_field | fields], value, password) do
     user_module = user_module || get_user_module()
-    repo = repo_module()
 
-    Enum.find_value(fields, fn field ->
-      user_module
-      |> repo.get_by([{field, value}])
-      |> auth_result(password)
+    Enum.reduce(fields, from(um in user_module, where: ^[{first_field, value}]), fn field,
+                                                                                    query ->
+      or_where(query, [um], ^[{field, value}])
     end)
+    |> repo_module().one()
+    |> auth_result(password)
   end
 
   @doc """
