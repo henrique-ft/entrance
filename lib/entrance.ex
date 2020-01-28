@@ -66,8 +66,7 @@ defmodule Entrance do
   end
 
   @doc """
-  Receives an atom list as fields list, a value and a password. Authenticates a user by at least one field in the fields list. Returns the user if the
-  user is found and the password is correct, otherwise nil.
+  Receives an atom list as fields list, a value and a password. Authenticates a user by at least one field in the fields list. Returns the user if the user is found and the password is correct, otherwise nil.
 
   Requires `user_module`, `security_module`, and `repo` to be configured via
   `Mix.Config`.
@@ -94,8 +93,11 @@ defmodule Entrance do
   end
 
   @doc """
-  Receives an atom list as fields list, a value and a password. Authenticates a user by at least one field in the fields list. Returns the user if the
-  user is found and the password is correct, otherwise nil.
+  Receives a tuple with an atom list and a value, a keyword list and a password.
+
+  First verify if there is a user with one of the atom list fields matching the value.
+  If the user is found, verify if the user schema fields match with the keyword list values.
+  If a user is found, the fields match, and the password is correct, returns the user, otherwise nil.
 
   Requires `user_module`, `security_module`, and `repo` to be configured via
   `Mix.Config`.
