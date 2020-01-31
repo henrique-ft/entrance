@@ -157,6 +157,11 @@ defmodule Entrance do
 
   Make sure your pipeline uses a login plug to fetch the current user for this
   function to work correctly..
+
+  ```
+  user = Myapp.Repo.get(Myapp.User, 1)
+  Entrance.auth_user(user, "brandyr00lz")
+  ```
   """
   def logged_in?(conn), do: conn.assigns[:current_user] != nil
 

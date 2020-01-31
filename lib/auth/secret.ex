@@ -39,8 +39,6 @@ defmodule Entrance.Auth.Secret do
   @doc """
   Takes a changeset and adds a secure random string in the `session_secret` field.
 
-  ## Example
-
   ```
   %User{}
   |> User.changeset(user_params)

@@ -7,8 +7,6 @@ defmodule Entrance.Login.Session do
   @doc """
   Logs in given user by setting `:user_id` on the session of passed in `conn`. The user struct must have an `:session_secret` field.
 
-  ## Example
-
   ```
   import Entrance.Login.Session
 
@@ -30,8 +28,6 @@ defmodule Entrance.Login.Session do
   @doc """
   Logs out current user.
 
-  ## Example
-
   ```
   import Entrance.Login.Session
 
@@ -50,8 +46,6 @@ defmodule Entrance.Login.Session do
 
   @doc """
   Returns the current user or nil based on `:user_id` in the session.
-
-  ## Example
 
   ```
   import Entrance.Login.Session

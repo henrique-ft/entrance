@@ -28,7 +28,7 @@ defmodule Entrance.Auth.Bcrypt do
     @doc false
     def changeset(user, attrs) do
       user
-      |> cast(attrs, [:email, :password, :hashed_password, :session_secret]) # Dont forget to add :password here
+      |> cast(attrs, [:email, :password, :hashed_password, :session_secret])
       |> validate_required([:email, :password])
       |> hash_password # ...
     end
@@ -48,6 +48,18 @@ defmodule Entrance.Auth.Bcrypt do
   @doc """
   Takes a changeset and turns the virtual `password` field into a
   `hashed_password` change on the changeset.
+
+  ```
+  import Entrance.Auth.Bcrypt, only: [hash_password: 1]
+
+  # ... your user schema
+  def changeset(user, attrs) do
+    user
+    |> cast(attrs, [:email, :password, :hashed_password, :session_secret])
+    |> validate_required([:email, :password])
+    |> hash_password # :)
+  end
+  ```
   """
   def hash_password(changeset) do
     password = Changeset.get_change(changeset, :password)
@@ -64,8 +76,6 @@ defmodule Entrance.Auth.Bcrypt do
 
   @doc """
   Compares the given `password` against the given `user`'s password.
-
-  ## Example
 
   ```
   user = %{hashed_password: "iHkKDjU_example"}
