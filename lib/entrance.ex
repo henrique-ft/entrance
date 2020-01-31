@@ -1,11 +1,13 @@
 defmodule Entrance do
+  import Ecto.Query
+
   @moduledoc """
   Provides authentication helpers that take advantage of the options configured
   in your config files.
   """
 
   @doc """
-  Authenticates a user by the default authenticable field (defined in your configurations) and password. Returns the user if the
+  Authenticates an user by the default authenticable field (defined in your configurations) and password. Returns the user if the
   user is found and the password is correct, otherwise nil. For example, if the default authenticable field configured is `:email`, it will try match with the `:email` field of user schema.
 
   Requires `user_module`, `security_module`, `repo` and `default_authenticable_field` to be configured via
@@ -21,11 +23,15 @@ defmodule Entrance do
   Entrance.auth(Customer, "brandy@dirt.com", "super-password")
   ```
   """
-  def auth(user_module \\ nil, field_value, password),
-    do: auth_action(user_module, [{get_default_authenticable_field(), field_value}], password)
+  def auth(user_module \\ nil, field_value, password) do
+    user_module = user_module || get_user_module()
+    user = repo_module().get_by(user_module, [{default_authenticable_field(), field_value}])
+
+    auth_result(user, password)
+  end
 
   @doc """
-  Similar to auth/2, but authenticates a user by one or more differents fields. Returns the user if the
+  Authenticates an user by checking more than one field. Returns the user if the
   user is found and the password is correct, otherwise nil.
 
   Requires `user_module`, `security_module`, and `repo` to be configured via
@@ -44,16 +50,91 @@ defmodule Entrance do
   def auth_by(user_module \\ nil, fields_values, password) do
     unless Keyword.keyword?(fields_values) do
       raise """
-      Entrance.authenticate_by/2 must receive a keyword list
+      Entrance.auth_by/2 must receive a keyword list
 
       Here is some examples:
 
-        Entrance.authenticate_by([email: "joe@dirt.com", admin: true], "brandyr00lz")
-        Entrance.authenticate_by(Customer, [email: "joe@dirt.com", admin: true], "brandyr00lz")
+        Entrance.auth_by([email: "joe@dirt.com", admin: true], "brandyr00lz")
+        Entrance.auth_by(Customer, [email: "joe@dirt.com", admin: true], "brandyr00lz")
       """
     end
 
-    auth_action(user_module, fields_values, password)
+    user_module = user_module || get_user_module()
+    user = repo_module().get_by(user_module, fields_values)
+
+    auth_result(user, password)
+  end
+
+  @doc """
+  Receives an atom list as fields list, a value and a password. Authenticates a user by at least one field in the fields list. Returns the user if the user is found and the password is correct, otherwise nil.
+
+  Requires `user_module`, `security_module`, and `repo` to be configured via
+  `Mix.Config`.
+
+  ```
+  Entrance.auth_one([:email, :nickname], "my-nickname", "my-password")
+  ```
+
+  If you want to authenticate other modules, you can pass in the module directly.
+
+  ```
+  Entrance.auth_one(Customer, [:nickname, :email], "my@email.com", "my-password")
+  ```
+  """
+  def auth_one(user_module \\ nil, [first_field | fields], value, password) do
+    user_module = user_module || get_user_module()
+
+    Enum.reduce(fields, from(um in user_module, where: ^[{first_field, value}]), fn field,
+                                                                                    query ->
+      or_where(query, [um], ^[{field, value}])
+    end)
+    |> repo_module().one()
+    |> auth_result(password)
+  end
+
+  @doc """
+  Receives a tuple with an atom list and a value, a keyword list and a password.
+
+  First verify if there is a user with one of the atom list fields matching the value.
+  If the user is found, verify if the user schema fields match with the keyword list values.
+  If a user is found, the fields match, and the password is correct, returns the user, otherwise nil.
+
+  Requires `user_module`, `security_module`, and `repo` to be configured via
+  `Mix.Config`.
+
+  ```
+  Entrance.auth_one_by({[:email, :nickname], "value"}, [admin: true] , "my-password")
+  ```
+
+  If you want to authenticate other modules, you can pass in the module directly.
+
+  ```
+  Entrance.auth_one_by(Customer, {[:email, :nickname], "value"}, [admin: true], "my-password")
+  ```
+  """
+  def auth_one_by(
+        user_module \\ nil,
+        {[first_field | fields], value},
+        extra_fields_values,
+        password
+      ) do
+    user_module = user_module || get_user_module()
+
+    user =
+      Enum.reduce(fields, from(um in user_module, where: ^[{first_field, value}]), fn field,
+                                                                                      query ->
+        or_where(query, [um], ^[{field, value}])
+      end)
+      |> repo_module().one()
+
+    if user != nil &&
+         Enum.all?(extra_fields_values, fn {extra_field, extra_value} ->
+           Map.get(user, extra_field) == extra_value
+         end) do
+      auth_result(user, password)
+    else
+      auth_result(nil, password)
+    end
   end
 
   @doc """
@@ -79,19 +160,13 @@ defmodule Entrance do
   """
   def logged_in?(conn), do: conn.assigns[:current_user] != nil
 
-  defp auth_action(user_module, fields, password) do
-    user_module = user_module || get_user_module()
-    user = repo_module().get_by(user_module, fields)
-
+  defp auth_result(user, password) do
     cond do
       user && auth_user(user, password) ->
         user
 
       true ->
         security_module().no_user_verify()
-        nil
-
-      user ->
         nil
     end
   end
@@ -102,7 +177,7 @@ defmodule Entrance do
 
   defp security_module, do: get_module(:security_module)
 
-  defp get_default_authenticable_field, do: get_module(:default_authenticable_field)
+  defp default_authenticable_field, do: get_module(:default_authenticable_field)
 
   defp get_module(name) do
     case Application.get_env(:entrance, name) do
@@ -115,7 +190,7 @@ defmodule Entrance do
           config :entrance,
             repo: MyApp.Repo,
             security_module: Entrance.Auth.Bcrypt,
-            user_module: MyApp.User,
+            user_module: MyApp.Accounts.User,
             default_authenticable_field: :email
         """
 

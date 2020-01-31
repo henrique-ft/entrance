@@ -157,15 +157,29 @@ defmodule YourAppWeb.SessionController do
 end
 ```
 
-You can also use `Entrance.auth_by` if your authentication needs more fields matching the user schema:
+There are some other functions that might fit well with your needs: 
+
+If your authentication needs more fields matching the user schema `Entrance.auth_by`:
 
 ```elixir
 Entrance.auth_by([email: email, admin: true], password)
 ```
 
-*Note: In this README example, we did not create the `:admin` field in `Accounts.User` schema*
+If needs more fields matching the same value, `Entrance.auth_one`:
 
-Read more about *Entrance* "auth functions" variations [here](https://hexdocs.pm/entrance/Entrance.html#content), and find what can fit more to your needs.
+```elixir
+Entrance.auth_one([:email, :nickname], my_nickname, password)
+```
+
+If needs more fields matching the same value, and more fields matching the user schema `Entrance.auth_one_by`:
+
+```elixir
+Entrance.auth_one_by({[:email, :nickname], my_nickname}, [admin: true], password)
+```
+
+*Note: In this README example, we did not create the `:admin` or `:nickname` fields in `Accounts.User` schema*
+
+Read more about *Entrance* "auth functions" variations [here](https://hexdocs.pm/entrance/Entrance.html#content).
 
 #### Requiring Authentication
 
