@@ -317,7 +317,7 @@ end
 
 ## Contribute
 
-*Entrance* is not only for me, but for the Elixir community.
+*Entrance* is not only for me, but for the *Elixir* community.
 
 I'm totally open to new ideas. Fork, open issues and feel free to contribute with no bureaucracy. We only need to keep some patterns to maintain an organization:
 
