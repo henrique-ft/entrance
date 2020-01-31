@@ -5,6 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.3.0] - 2020-01-24
+### Added
+- Entrance.auth_one/3
+- Entrance.auth_one_by/4
+- Our logo :)
+### Changed
+- Some code and documentation refactor
 ## [0.2.0] - 2020-01-24
 ### Added
 - default_authenticable_field. Now it's possible to set any user schema field to be the default_authenticable_field in Entrance.auth/3 function
