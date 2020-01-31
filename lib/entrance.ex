@@ -1,5 +1,5 @@
 defmodule Entrance do
-  import Ecto.Query
+  import Ecto.Query, only: [from: 2, or_where: 3]
 
   @moduledoc """
   Provides authentication helpers that take advantage of the options configured
