@@ -13,11 +13,11 @@ defmodule Entrance.Login do
   ## Example
 
   ```
-  defmodule MyApp.Auth do
+  defmodule YourApp.Auth do
     use Entrance.Login
 
     defp get_current_user(conn) do
-      MyApp.Repo.get(MyApp.User, 1)
+      YourApp.Repo.get(YourApp.Accounts.User, 1)
     end
   end
   ```

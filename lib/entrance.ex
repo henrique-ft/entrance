@@ -188,9 +188,9 @@ defmodule Entrance do
         Here is an example configuration:
 
           config :entrance,
-            repo: MyApp.Repo,
+            repo: YourApp.Repo,
             security_module: Entrance.Auth.Bcrypt,
-            user_module: MyApp.Accounts.User,
+            user_module: YourApp.Accounts.User,
             default_authenticable_field: :email
         """
 

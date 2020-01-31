@@ -11,15 +11,26 @@ defmodule Entrance.Auth.Bcrypt do
   ## Example
 
   ```
-  defmodule User do
-    import Entrance.Auth.Bcrypt, only: [hash_password: 1]
-
+  defmodule YourApp.Accounts.User do
+    use Ecto.Schema
     import Ecto.Changeset
+    import Entrance.Auth.Bcrypt, only: [hash_password: 1] # ...
 
-    def create_changeset(struct, changes) do
-      struct
-      |> cast(changes, ~w(email password))
-      |> hash_password
+    schema "users" do
+      field :email, :string
+      field :password, :string, virtual: true
+      field :hashed_password, :string
+      field :session_secret, :string
+
+      timestamps()
+    end
+
+    @doc false
+    def changeset(user, attrs) do
+      user
+      |> cast(attrs, [:email, :password, :hashed_password, :session_secret]) # Dont forget to add :password here
+      |> validate_required([:email, :password])
+      |> hash_password # ...
     end
   end
   ```
@@ -28,7 +39,8 @@ defmodule Entrance.Auth.Bcrypt do
 
   ```
   user = Repo.get(User, 1)
-  User.auth(user, "password")
+  password = "user@password"
+  Entrance.Auth.Bcrypt.auth(user, password)
   ```
   """
   alias Ecto.Changeset
@@ -60,7 +72,6 @@ defmodule Entrance.Auth.Bcrypt do
   password = "user@password"
   Entrance.Auth.Bcrypt.auth(user, password)
   ```
-
   """
   def auth(user, password),
     do: Bcrypt.verify_pass(password, user.hashed_password)
