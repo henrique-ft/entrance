@@ -317,6 +317,8 @@ end
 
 ## Contribute
 
+*Entrance* is not only for me, but for the Elixir community.
+
 I'm totally open to new ideas. Fork, open issues and feel free to contribute with no bureaucracy. We only need to keep some patterns to maintain an organization:
 
 #### branchs
@@ -329,6 +331,8 @@ I'm totally open to new ideas. Fork, open issues and feel free to contribute wit
 
 ## Credits
 
-Entrance was built upon [Doorman](https://github.com/BlakeWilliams/doorman). 
+Entrance was built upon [Doorman](https://github.com/BlakeWilliams/doorman). Thanks to [Blake Williams](https://github.com/blakewilliams) & [Ashley Foster](https://github.com/AshleyFoster).
 
-Thanks to [Blake Williams](https://github.com/BlakeWilliams) & [Ashley Foster](https://github.com/AshleyFoster)
+For the logo, thanks to [Melissa Moreira](https://github.com/melissamoreira)
+
+

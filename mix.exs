@@ -11,7 +11,7 @@ defmodule Entrance.Mixfile do
       start_permanent: Mix.env() == :prod,
       description: "Easy, secure and flexible authentication for Plug / Phoenix projects.",
       package: package(),
-      docs: [extras: ["README.md"], main: "readme"],
+      docs: [logo: "guides/logo.png", extras: ["README.md"], main: "readme"],
       deps: deps()
     ]
   end
@@ -23,10 +23,10 @@ defmodule Entrance.Mixfile do
   defp deps do
     [
       {:bcrypt_elixir, "~> 2.1"},
+      {:ecto, "~> 3.3"},
+      {:plug, "~> 1.8"},
       {:earmark, "~> 1.4", only: :dev},
-      {:ecto, "~> 3.3", only: :test},
-      {:ex_doc, "~> 0.21.2", only: :dev},
-      {:plug, "~> 1.8"}
+      {:ex_doc, "~> 0.21.2", only: :dev}
     ]
   end
 

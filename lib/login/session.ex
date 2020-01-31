@@ -5,7 +5,19 @@ defmodule Entrance.Login.Session do
   @session_secret :session_secret
 
   @doc """
-  Logs in given user by setting `:user_id` on the session of passed in `conn`.
+  Logs in given user by setting `:user_id` on the session of passed in `conn`. The user struct must have an `:session_secret` field.
+
+  ```
+  import Entrance.Login.Session
+
+  # ... your controller
+  user = Repo.get(User, 1)
+
+  conn
+  |> login(user)
+  |> put_flash(:notice, "Successfully logged in")
+  |> redirect(to: "/")
+  ```
   """
   def login(conn, user) do
     conn
@@ -15,6 +27,16 @@ defmodule Entrance.Login.Session do
 
   @doc """
   Logs out current user.
+
+  ```
+  import Entrance.Login.Session
+
+  # ... your controller
+  conn
+  |> logout
+  |> put_flash(:notice, "Successfully logged out")
+  |> redirect(to: "/")
+  ```
   """
   def logout(conn) do
     conn
@@ -24,6 +46,15 @@ defmodule Entrance.Login.Session do
 
   @doc """
   Returns the current user or nil based on `:user_id` in the session.
+
+  ```
+  import Entrance.Login.Session
+
+  # ... your controller
+  login(conn, Repo.get(User, 1))
+
+  user = get_current_user(conn)
+  ```
   """
   def get_current_user(conn) do
     id = Plug.Conn.get_session(conn, @session_key)

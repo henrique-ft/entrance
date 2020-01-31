@@ -9,19 +9,21 @@ defmodule Entrance.Auth.Secret do
   ## Example
 
   ```
-  defmodule MyApp.UserController do
-    use MyApp.Web, :controller
+  defmodule YourAppWeb.UserController do
+    use YourAppWeb, :controller
+    alias YourApp.Repo
+
     alias Entrance.Auth.Secret
-    alias MyApp.User
+    alias YourApp.Accounts.User
 
     def create(conn, %{"user" => user_params}) do
       changeset =
         %User{}
-        |> User.create_changeset(user_params)
+        |> User.changeset(user_params)
         |> Secret.put_session_secret()
 
       case Repo.insert(changeset) do
-        {:ok, user} ->
+        {:ok, _user} ->
           conn |> redirect(to: "/")
         {:error, changeset} ->
           conn |> render("new.html", changeset: changeset)
@@ -36,6 +38,12 @@ defmodule Entrance.Auth.Secret do
 
   @doc """
   Takes a changeset and adds a secure random string in the `session_secret` field.
+
+  ```
+  %User{}
+  |> User.changeset(user_params)
+  |> Secret.put_session_secret()
+  ```
   """
   def put_session_secret(changeset, length \\ 64),
     do: Changeset.put_change(changeset, :session_secret, random_string(length))

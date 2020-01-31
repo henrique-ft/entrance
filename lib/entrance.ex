@@ -1,5 +1,5 @@
 defmodule Entrance do
-  import Ecto.Query
+  import Ecto.Query, only: [from: 2, or_where: 3]
 
   @moduledoc """
   Provides authentication helpers that take advantage of the options configured
@@ -157,6 +157,11 @@ defmodule Entrance do
 
   Make sure your pipeline uses a login plug to fetch the current user for this
   function to work correctly..
+
+  ```
+  user = Myapp.Repo.get(Myapp.User, 1)
+  Entrance.auth_user(user, "brandyr00lz")
+  ```
   """
   def logged_in?(conn), do: conn.assigns[:current_user] != nil
 
@@ -188,9 +193,9 @@ defmodule Entrance do
         Here is an example configuration:
 
           config :entrance,
-            repo: MyApp.Repo,
+            repo: YourApp.Repo,
             security_module: Entrance.Auth.Bcrypt,
-            user_module: MyApp.Accounts.User,
+            user_module: YourApp.Accounts.User,
             default_authenticable_field: :email
         """
 
