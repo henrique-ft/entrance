@@ -157,21 +157,23 @@ defmodule YourAppWeb.SessionController do
 end
 ```
 
-There are some other functions that might fit well with your needs: 
+*Entrance* have some other functions that might fit well too, 
 
-If your authentication needs more fields matching the user schema `Entrance.auth_by`:
+if you need...
+
+More fields matching the user schema `Entrance.auth_by`:
 
 ```elixir
 Entrance.auth_by([email: email, admin: true], password)
 ```
 
-If needs more fields matching the same value, `Entrance.auth_one`:
+More fields matching the same value, `Entrance.auth_one`:
 
 ```elixir
 Entrance.auth_one([:email, :nickname], my_nickname, password)
 ```
 
-If needs more fields matching the same value, and more fields matching the user schema `Entrance.auth_one_by`:
+More fields matching the same value, and more fields matching the user schema `Entrance.auth_one_by`:
 
 ```elixir
 Entrance.auth_one_by({[:email, :nickname], my_nickname}, [admin: true], password)
