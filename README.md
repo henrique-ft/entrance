@@ -8,7 +8,7 @@
 
 Modules and functions to make authentication with *Plug / Phoenix* and *Ecto* easy without tons of configuration or boxing users into rigid and bloated framework.
  
-The primary goal of *Entrance* is to build an opinionated interface and easy to use API on top of flexible modules that can also be used directly.
+The primary goal of *Entrance* is to build an opinionated interface and easy to use *API* on top of flexible modules that can also be used directly.
 
 If you like simple and beautiful code, you'd like *Entrance*.
 
