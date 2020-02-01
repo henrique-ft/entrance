@@ -6,35 +6,34 @@ defmodule Entrance.Phoenix.Inflector do
 
   ## Examples
 
-      iex> Mix.Phoenix.inflect("user")
-      [alias: "User",
-       human: "User",
-       base: "Phoenix",
-       web_module: "PhoenixWeb",
-       module: "Phoenix.User",
-       scoped: "User",
-       singular: "user",
-       path: "user"]
+  ```
+  [alias: "User",
+   human: "User",
+   base: "Phoenix",
+   web_module: "PhoenixWeb",
+   module: "Phoenix.User",
+   scoped: "User",
+   singular: "user",
+   path: "user"]
 
-      iex> Mix.Phoenix.inflect("Admin.User")
-      [alias: "User",
-       human: "User",
-       base: "Phoenix",
-       web_module: "PhoenixWeb",
-       module: "Phoenix.Admin.User",
-       scoped: "Admin.User",
-       singular: "user",
-       path: "admin/user"]
+  [alias: "User",
+   human: "User",
+   base: "Phoenix",
+   web_module: "PhoenixWeb",
+   module: "Phoenix.Admin.User",
+   scoped: "Admin.User",
+   singular: "user",
+   path: "admin/user"]
 
-      iex> Mix.Phoenix.inflect("Admin.SuperUser")
-      [alias: "SuperUser",
-       human: "Super user",
-       base: "Phoenix",
-       web_module: "PhoenixWeb",
-       module: "Phoenix.Admin.SuperUser",
-       scoped: "Admin.SuperUser",
-       singular: "super_user",
-       path: "admin/super_user"]
+  [alias: "SuperUser",
+   human: "Super user",
+   base: "Phoenix",
+   web_module: "PhoenixWeb",
+   module: "Phoenix.Admin.SuperUser",
+   scoped: "Admin.SuperUser",
+   singular: "super_user",
+   path: "admin/super_user"]
+   ```
 
   """
   def call(singular) do
