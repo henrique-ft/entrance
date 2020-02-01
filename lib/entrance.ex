@@ -1,4 +1,5 @@
 defmodule Entrance do
+  import Entrance.Config, only: [config: 1]
   import Ecto.Query, only: [from: 2, or_where: 3]
 
   @moduledoc """
@@ -24,8 +25,8 @@ defmodule Entrance do
   ```
   """
   def auth(user_module \\ nil, field_value, password) do
-    user_module = user_module || get_user_module()
-    user = repo_module().get_by(user_module, [{default_authenticable_field(), field_value}])
+    user_module = user_module || config(:user_module)
+    user = config(:repo).get_by(user_module, [{config(:default_authenticable_field), field_value}])
 
     auth_result(user, password)
   end
@@ -59,8 +60,8 @@ defmodule Entrance do
       """
     end
 
-    user_module = user_module || get_user_module()
-    user = repo_module().get_by(user_module, fields_values)
+    user_module = user_module || config(:user_module)
+    user = config(:repo).get_by(user_module, fields_values)
 
     auth_result(user, password)
   end
@@ -82,13 +83,13 @@ defmodule Entrance do
   ```
   """
   def auth_one(user_module \\ nil, [first_field | fields], value, password) do
-    user_module = user_module || get_user_module()
+    user_module = user_module || config(:user_module)
 
     Enum.reduce(fields, from(um in user_module, where: ^[{first_field, value}]), fn field,
                                                                                     query ->
       or_where(query, [um], ^[{field, value}])
     end)
-    |> repo_module().one()
+    |> config(:repo).one()
     |> auth_result(password)
   end
 
@@ -118,14 +119,14 @@ defmodule Entrance do
         extra_fields_values,
         password
       ) do
-    user_module = user_module || get_user_module()
+    user_module = user_module || config(:user_module)
 
     user =
       Enum.reduce(fields, from(um in user_module, where: ^[{first_field, value}]), fn field,
                                                                                       query ->
         or_where(query, [um], ^[{field, value}])
       end)
-      |> repo_module().one()
+      |> config(:repo).one()
 
     if user != nil &&
          Enum.all?(extra_fields_values, fn {extra_field, extra_value} ->
@@ -149,7 +150,7 @@ defmodule Entrance do
   Entrance.auth_user(user, "brandyr00lz")
   ```
   """
-  def auth_user(user, password), do: security_module().auth(user, password)
+  def auth_user(user, password), do: config(:security_module).auth(user, password)
 
   @doc """
   Returns true if passed in `conn`s `assigns` has a non-nil `:current_user`,
@@ -171,36 +172,8 @@ defmodule Entrance do
         user
 
       true ->
-        security_module().no_user_verify()
+        config(:security_module).no_user_verify()
         nil
-    end
-  end
-
-  defp repo_module, do: get_module(:repo)
-
-  defp get_user_module, do: get_module(:user_module)
-
-  defp security_module, do: get_module(:security_module)
-
-  defp default_authenticable_field, do: get_module(:default_authenticable_field)
-
-  defp get_module(name) do
-    case Application.get_env(:entrance, name) do
-      nil ->
-        raise """
-        You must add `#{Atom.to_string(name)}` to `entrance` in your config
-
-        Here is an example configuration:
-
-          config :entrance,
-            repo: YourApp.Repo,
-            security_module: Entrance.Auth.Bcrypt,
-            user_module: YourApp.Accounts.User,
-            default_authenticable_field: :email
-        """
-
-      module ->
-        module
     end
   end
 end

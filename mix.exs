@@ -11,7 +11,7 @@ defmodule Entrance.Mixfile do
       start_permanent: Mix.env() == :prod,
       description: "Easy, secure and flexible authentication for Plug / Phoenix projects.",
       package: package(),
-      docs: [logo: "guides/logo.png", extras: ["README.md"], main: "readme"],
+      docs: [logo: "priv/static/logo.png", extras: ["README.md"], main: "readme"],
       deps: deps()
     ]
   end
