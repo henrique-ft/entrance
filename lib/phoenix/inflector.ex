@@ -42,22 +42,24 @@ defmodule Entrance.Phoenix.Inflector do
     web_path = base |> web_path()
     scoped = camelize(singular)
     path = underscore(scoped)
-    singular = String.split(path, "/") |> List.last
+    singular = String.split(path, "/") |> List.last()
     module = Module.concat(base, scoped) |> inspect
     test_module = "#{module}Test"
-    alias = String.split(module, ".") |> List.last
+    alias = String.split(module, ".") |> List.last()
     human = humanize(singular)
 
-    [alias: alias,
-     human: human,
-     base: base,
-     web_module: web_module,
-     web_path: web_path,
-     test_module: test_module,
-     module: module,
-     scoped: scoped,
-     singular: singular,
-     path: path]
+    [
+      alias: alias,
+      human: human,
+      base: base,
+      web_module: web_module,
+      web_path: web_path,
+      test_module: test_module,
+      module: module,
+      scoped: scoped,
+      singular: singular,
+      path: path
+    ]
   end
 
   defp web_path(base) do
@@ -79,7 +81,7 @@ defmodule Entrance.Phoenix.Inflector do
   defp app_base(app) do
     case Application.get_env(app, :namespace, app) do
       ^app -> app |> to_string() |> camelize()
-      mod  -> mod |> inspect()
+      mod -> mod |> inspect()
     end
   end
 
@@ -90,11 +92,13 @@ defmodule Entrance.Phoenix.Inflector do
   defp camelize(value), do: Macro.camelize(value)
 
   defp camelize("", :lower), do: ""
-  defp camelize(<<?_, t :: binary>>, :lower) do
+
+  defp camelize(<<?_, t::binary>>, :lower) do
     camelize(t, :lower)
   end
-  defp camelize(<<h, _t :: binary>> = value, :lower) do
-    <<_first, rest :: binary>> = camelize(value)
+
+  defp camelize(<<h, _t::binary>> = value, :lower) do
+    <<_first, rest::binary>> = camelize(value)
     <<to_lower_char(h)>> <> rest
   end
 
@@ -102,6 +106,7 @@ defmodule Entrance.Phoenix.Inflector do
 
   defp humanize(atom) when is_atom(atom),
     do: humanize(Atom.to_string(atom))
+
   defp humanize(bin) when is_binary(bin) do
     bin =
       if String.ends_with?(bin, "_id") do
@@ -110,7 +115,7 @@ defmodule Entrance.Phoenix.Inflector do
         bin
       end
 
-    bin |> String.replace("_", " ") |> String.capitalize
+    bin |> String.replace("_", " ") |> String.capitalize()
   end
 
   defp to_lower_char(char) when char in ?A..?Z, do: char + 32

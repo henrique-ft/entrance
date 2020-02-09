@@ -7,7 +7,6 @@ defmodule Entrance do
   import Entrance.Config, only: [config: 1]
   import Ecto.Query, only: [from: 2, or_where: 3]
 
-
   @doc """
   Authenticates an user by the default authenticable field (defined in your configurations) and password. Returns the user if the
   user is found and the password is correct, otherwise nil. For example, if the default authenticable field configured is `:email`, it will try match with the `:email` field of user schema.
@@ -27,7 +26,9 @@ defmodule Entrance do
   """
   def auth(user_module \\ nil, field_value, password) do
     user_module = user_module || config(:user_module)
-    user = config(:repo).get_by(user_module, [{config(:default_authenticable_field), field_value}])
+
+    user =
+      config(:repo).get_by(user_module, [{config(:default_authenticable_field), field_value}])
 
     auth_result(user, password)
   end
