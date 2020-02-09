@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Functions nomenclature from "authenticate" to "auth"
 - Do some code refactors
-- Make the Mix.Config nomenclature to a more legible. Example:
+- Make the Mix.Config nomenclature to a more legible.
 
 ## [0.1.0] - 2020-01-23
 ### Added
