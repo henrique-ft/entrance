@@ -1,11 +1,12 @@
 defmodule Entrance do
-  import Entrance.Config, only: [config: 1]
-  import Ecto.Query, only: [from: 2, or_where: 3]
-
   @moduledoc """
   Provides authentication helpers that take advantage of the options configured
   in your config files.
   """
+
+  import Entrance.Config, only: [config: 1]
+  import Ecto.Query, only: [from: 2, or_where: 3]
+
 
   @doc """
   Authenticates an user by the default authenticable field (defined in your configurations) and password. Returns the user if the

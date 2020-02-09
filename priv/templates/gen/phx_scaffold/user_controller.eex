@@ -1,9 +1,9 @@
-defmodule YourAppWeb.Accounts.UserController do
-  use YourAppWeb, :controller
+defmodule <%= @context[:web_module] %>.<%= @context[:scoped] %> do
+  use <%= @context[:web_module] %>, :controller
   alias YourApp.Repo
 
   alias Entrance.Auth.Secret
-  alias YourApp.Accounts.User
+  alias <%= @context[:user_module] %>
 
   def new(conn, _params) do
     changeset = User.changeset(%User{}, %{})
