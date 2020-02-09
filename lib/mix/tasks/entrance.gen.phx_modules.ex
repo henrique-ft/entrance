@@ -2,7 +2,7 @@ defmodule Mix.Tasks.Entrance.Gen.PhxModules do
   @shortdoc "Creates phoenix modules for authentication with entrance (session_controller, user_controller, views and plugs/require_login"
 
   @moduledoc """
-  Creates phoenix modules for authentication with entrance (session_controller, user_controller and plugs/require_login
+  Creates phoenix modules for authentication with entrance (session_controller, user_controller and plugs/require_login).
 
       mix entrance.gen.phx_modules
 
@@ -19,14 +19,13 @@ defmodule Mix.Tasks.Entrance.Gen.PhxModules do
 
       mix entrance.gen.phx_modules --context Accounts
 
-  With "--context Accounts" your files will be:
+  With "--context Accounts" creates:
       * a controller in `lib/your_app_web/controllers/accounts/user_controller.ex`
       * a view in `lib/your_app_web/views/accounts/user_view.ex`
       * a controller in `lib/your_app_web/controllers/accounts/session_controller.ex`
       * a view in `lib/your_app_web/views/accounts/session_view.ex`
       * a plug in `lib/your_app_web/plugs/accounts/require_login.ex`
   """
-  alias Entrance.Phoenix.Inflector
   use Mix.Task
 
   @doc false
@@ -57,119 +56,8 @@ defmodule Mix.Tasks.Entrance.Gen.PhxModules do
       """)
     end
 
-    base_context = get_context(args)
-
-    create_user_controller(base_context)
-    create_user_view(base_context)
-
-    create_session_controller(base_context)
-    create_session_view(base_context)
-
-    create_require_login_plug(base_context)
-
-    create_user_controller_test(base_context)
-    create_user_view_test(base_context)
-
-    create_session_controller_test(base_context)
-    create_session_view_test(base_context)
-
-    create_require_login_plug_test(base_context)
+    Mix.Tasks.Entrance.Gen.PhxUserController.run(false, args)
+    Mix.Tasks.Entrance.Gen.PhxSessionController.run(false, args)
+    Mix.Tasks.Entrance.Gen.PhxRequireLogin.run(false, args)
   end
-
-  def create_user_controller(base_context) do
-    context = Inflector.call("#{base_context}UserController")
-
-    copy_template(
-      "user_controller.eex",
-      "lib/#{context[:web_path]}/controllers/#{context[:path]}.ex",
-      context: context
-    )
-  end
-
-  def create_user_controller_test(base_context) do
-    context = Inflector.call("#{base_context}UserControllerTest")
-
-    copy_template(
-      "user_controller_test.eex",
-      "test/#{context[:web_path]}/controllers/#{context[:path]}.ex",
-      context: context
-    )
-  end
-
-  def create_user_view(base_context) do
-    context = Inflector.call("#{base_context}UserView")
-
-    copy_template("user_view.eex", "lib/#{context[:web_path]}/views/#{context[:path]}.ex",
-      context: context
-    )
-  end
-
-  def create_user_view_test(base_context) do
-    context = Inflector.call("#{base_context}UserViewTest")
-
-    copy_template("user_view_test.eex", "test/#{context[:web_path]}/views/#{context[:path]}.ex",
-      context: context
-    )
-  end
-
-  def create_session_controller(base_context) do
-    context = Inflector.call("#{base_context}SessionController")
-
-    copy_template(
-      "session_controller.eex",
-      "lib/#{context[:web_path]}/controllers/#{context[:path]}.ex",
-      context: context
-    )
-  end
-
-  def create_session_controller_test(base_context) do
-    context = Inflector.call("#{base_context}SessionControllerTest")
-
-    copy_template(
-      "session_controller_test.eex",
-      "test/#{context[:web_path]}/controllers/#{context[:path]}.ex",
-      context: context
-    )
-  end
-
-  def create_session_view(base_context) do
-    context = Inflector.call("#{base_context}SessionView")
-
-    copy_template("session_view.eex", "lib/#{context[:web_path]}/views/#{context[:path]}.ex",
-      context: context
-    )
-  end
-
-  def create_session_view_test(base_context) do
-    context = Inflector.call("#{base_context}SessionViewTest")
-
-    copy_template(
-      "session_view_test.eex",
-      "test/#{context[:web_path]}/views/#{context[:path]}.ex",
-      context: context
-    )
-  end
-
-  def create_require_login_plug(base_context) do
-    context = Inflector.call("Plugs.#{base_context}RequireLogin")
-
-    copy_template("require_login.eex", "lib/#{context[:web_path]}/#{context[:path]}.ex",
-      context: context
-    )
-  end
-
-  def create_require_login_plug_test(base_context) do
-    context = Inflector.call("Plugs.#{base_context}RequireLoginTest")
-
-    copy_template("require_login_test.eex", "test/#{context[:web_path]}/#{context[:path]}.ex",
-      context: context
-    )
-  end
-
-  defp copy_template(name, final_path, opts) do
-    Mix.Generator.copy_template("priv/templates/gen/phx_modules/#{name}", final_path, opts)
-  end
-
-  defp get_context(["--context", module]), do: "#{Inflector.call(module)[:scoped]}."
-  defp get_context([]), do: ""
 end

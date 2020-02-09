@@ -1,4 +1,4 @@
-defmodule Entrance.Phoenix.Inflector do
+defmodule Entrance.Mix.Phoenix.Inflector do
   @moduledoc false
 
   @doc """
@@ -91,16 +91,16 @@ defmodule Entrance.Phoenix.Inflector do
 
   defp camelize(value), do: Macro.camelize(value)
 
-  defp camelize("", :lower), do: ""
+  #defp camelize("", :lower), do: ""
 
-  defp camelize(<<?_, t::binary>>, :lower) do
-    camelize(t, :lower)
-  end
+  #defp camelize(<<?_, t::binary>>, :lower) do
+    #camelize(t, :lower)
+  #end
 
-  defp camelize(<<h, _t::binary>> = value, :lower) do
-    <<_first, rest::binary>> = camelize(value)
-    <<to_lower_char(h)>> <> rest
-  end
+  #defp camelize(<<h, _t::binary>> = value, :lower) do
+    #<<_first, rest::binary>> = camelize(value)
+    #<<to_lower_char(h)>> <> rest
+  #end
 
   defp underscore(value), do: Macro.underscore(value)
 
@@ -118,6 +118,6 @@ defmodule Entrance.Phoenix.Inflector do
     bin |> String.replace("_", " ") |> String.capitalize()
   end
 
-  defp to_lower_char(char) when char in ?A..?Z, do: char + 32
-  defp to_lower_char(char), do: char
+  #defp to_lower_char(char) when char in ?A..?Z, do: char + 32
+  #defp to_lower_char(char), do: char
 end

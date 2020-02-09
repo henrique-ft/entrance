@@ -18,11 +18,11 @@ defmodule YourAppWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/secret", YourAppWeb do
+  scope "/protected", YourAppWeb do
     pipe_through :browser
     pipe_through :protected
 
-    get "/", PageController, :secret
+    get "/", PageController, :protected
   end
 
   scope "/", YourAppWeb do

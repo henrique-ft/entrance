@@ -96,9 +96,8 @@ Finally, we can add our plug so we can have access to *current_user* on `conn.as
 
 #### Creating Users
 
-To create a user we can use the `User.changeset/2` function we defined. Here we'll also add the `session_secret` to the user, which is only needed when creating an user or in case of compromised sessions.
+To create a user we can use the `User.changeset/2` function we defined. Here we'll also add the `session_secret` to the user, which is only needed when creating an user or in case of compromised sessions. Example:
 
-*[your_app/lib/your_app_web/controllers/user_controller.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/controllers/user_controller.ex)*
 ```elixir
 defmodule YourAppWeb.UserController do
   use YourAppWeb, :controller
@@ -127,6 +126,34 @@ defmodule YourAppWeb.UserController do
   end   
 end  
 ```
+
+But if you want less boilerplate you can use `Entrance.User.create/1` and `Entrance.User.changeset/2` that does all this setup for us:
+
+*[your_app/lib/your_app_web/controllers/user_controller.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/controllers/user_controller.ex)*
+```elixir
+defmodule YourAppWeb.UserController do
+  use YourAppWeb, :controller
+    
+  def new(conn, _params) do    
+    conn |> render("new.html", changeset: Entrance.User.changeset)
+  end
+    
+  def create(conn, %{"user" => user_params}) do
+    case Entrance.User.create(user_params) do  
+      {:ok, _user} ->
+        conn |> redirect(to: "/")       
+      {:error, changeset} ->
+        conn |> render("new.html", changeset: changeset)
+    end 
+  end   
+end  
+```
+
+You can also create users based in another schemas (not only the default configured in `Mix.Config`):
+
+`Entrance.User.create(Customer, customer_params)`
+
+`Entrance.User.changeset(Customer)`
 
 #### Logging in users
 
@@ -209,17 +236,17 @@ end
 An example in *[your_app/lib/your_app_web/router.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/router.ex)*:
 
 ```elixir
-pipeline :secret do
+pipeline :protected do
   plug YourApp.Plugs.RequireLogin
 end 
 
 # ...
 
-scope "/secret", YourAppWeb do
+scope "/protected", YourAppWeb do
   pipe_through :browser
-  pipe_through :secret
+  pipe_through :protected
 
-  get "/", PageController, :secret
+  get "/", PageController, :protected
 end 
 
 # ...
@@ -305,10 +332,10 @@ defmodule YourAppWeb.PageControllerTest do
     %{logged_in_conn: logged_in_conn}
   end
 
-  test "GET /secret", %{logged_in_conn: logged_in_conn} do
+  test "GET /protected", %{logged_in_conn: logged_in_conn} do
     response =
       logged_in_conn
-      |> get("/secret")
+      |> get("/protected")
 
     assert html_response(response, 200) # Yeah, it passes!
   end
