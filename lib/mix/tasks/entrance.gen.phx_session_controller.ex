@@ -82,7 +82,6 @@ defmodule Mix.Tasks.Entrance.Gen.PhxSessionController do
     )
   end
 
-
   defp copy_template(name, final_path, opts) do
     Mix.Generator.copy_template("priv/templates/gen/phx_modules/#{name}", final_path, opts)
   end

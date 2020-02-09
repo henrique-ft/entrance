@@ -57,7 +57,7 @@ Run the migrations:
 
 Next, use `Entrance.Auth.Bcrypt` in your new `User` module and add a virtual `:password` field. `hash_password/1` is used in the changeset to hash our password and put it into the changeset as `:hashed_password`.
 
-*[your_app/lib/your_app/accounts/user.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app/accounts/user.ex)*
+*[your_app/lib/your_app/accounts/user.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app/accounts/user.ex)* 
 ```elixir
 defmodule YourApp.Accounts.User do
   use Ecto.Schema
@@ -127,9 +127,9 @@ defmodule YourAppWeb.UserController do
 end  
 ```
 
-But if you want less boilerplate you can use `Entrance.User.create/1` and `Entrance.User.changeset/2` that does all this setup for us:
+But if we want less boilerplate we can use `Entrance.User.create/1` and `Entrance.User.changeset/2` that does all this setup for us:
 
-*[your_app/lib/your_app_web/controllers/user_controller.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/controllers/user_controller.ex)*
+*[your_app/lib/your_app_web/controllers/user_controller.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/controllers/user_controller.ex)* |`$ mix entrance.gen.phx_user_controller`
 ```elixir
 defmodule YourAppWeb.UserController do
   use YourAppWeb, :controller
@@ -159,7 +159,7 @@ You can also create users based in another schemas (not only the default configu
 
 To login users we can use `Entrance.auth` and `Entrance.Login.Session.login/2`.
 
-*[your_app/lib/your_app_web/controllers/session_controller.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/controllers/session_controller.ex)*
+*[your_app/lib/your_app_web/controllers/session_controller.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/controllers/session_controller.ex)* |`$ mix entrance.gen.phx_session_controller`
 ```elixir
 defmodule YourAppWeb.SessionController do
   use YourAppWeb, :controller
@@ -214,7 +214,7 @@ Read more about *Entrance* "auth functions" variations [here](https://hexdocs.pm
 
 To require a user to be authenticated you can build a simple plug around `Entrance.logged_in?/1`.
 
-*[your_app/lib/your_app_web/plugs/require_login.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/plugs/require_login.ex)*
+*[your_app/lib/your_app_web/plugs/require_login.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/plugs/require_login.ex)* |`$ mix entrance.gen.phx_require_login`
 ```elixir
 defmodule YourApp.Plugs.RequireLogin do
   import Plug.Conn
@@ -256,7 +256,7 @@ end
 
 To logout users we can use `Entrance.Login.Session.logout/1`
 
-*[your_app/lib/your_app_web/controllers/session_controller.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/controllers/session_controller.ex)*
+*[your_app/lib/your_app_web/controllers/session_controller.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/controllers/session_controller.ex)* |`$ mix entrance.gen.phx_session_controller`
 ```elixir
 defmodule YourAppWeb.SessionController do 
   use YourAppWeb, :controller  
@@ -300,18 +300,11 @@ defmodule YourAppWeb.PageControllerTest do
 
   import Entrance.Login.Session, only: [login: 2] # Add this line
 
-  alias Entrance.Auth.Secret # And this line
-  alias YourApp.Accounts.User
-  alias YourApp.Repo
-
   # Setup an logged_in_conn
   setup do
-    changeset =
-      %User{}
-      |> User.changeset(%{email: "test@test.com", password: "test"})
-      |> Secret.put_session_secret()
-
-    {:ok, user} = Repo.insert(changeset)
+     # Create your test user
+    {:ok, user} =
+      Entrance.User.create(%{email: "test@test.com", password: "test"})
 
     opts =
       Plug.Session.init(
