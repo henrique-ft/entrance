@@ -6,11 +6,11 @@ defmodule Entrance.User do
 
   import Entrance.Config, only: [config: 1]
 
-  def create(user_params) do
-    user = config(:user_module)
+  def create(user_module \\ nil, user_params) do
+    user_module = user_module || config(:user_module)
 
-    %user{}
-    |> user.changeset(user_params)
+    struct(user_module)
+    |> user_module.changeset(user_params)
     |> Secret.put_session_secret()
     |> config(:repo).insert()
   end

@@ -1,4 +1,4 @@
-defmodule YourApp.Plugs.RequireLogin do
+defmodule <%= @context[:web_module] %>.<%= @context[:scoped] %> do
   import Plug.Conn
 
   def init(opts), do: opts

@@ -34,44 +34,50 @@ defmodule Mix.Tasks.Entrance.Gen.PhxScaffold do
     IO.inspect(Inflector.call("#{base_context}.UserController"))
 
     create_user_controller(base_context)
-    #create_user_view(base_context)
-    #create_user_templates(base_context)
+    create_user_view(base_context)
+    create_user_templates(base_context)
 
-    #create_session_controller(base_context)
-    #create_session_view(base_context)
-    #create_session_templates(base_context)
+    create_session_controller(base_context)
+    create_session_view(base_context)
+    create_session_templates(base_context)
 
-    #create_require_login_plug(base_context)
+    create_require_login_plug(base_context)
   end
 
   def create_user_controller(base_context) do
-    context =
-      Inflector.call("#{base_context}.UserController")
-      |> Keyword.put(:user_module, config(:user_module))
+    context = Inflector.call("#{base_context}.UserController")
 
     copy_template("user_controller.eex", "lib/your_app_web/controllers/#{context[:path]}.ex", [context: context])
   end
 
   def create_user_view(base_context) do
-    copy_template("user_view.ex", "lib/your_app_web/views/user_view.ex", [])
+    context = Inflector.call("#{base_context}.UserView")
+
+    copy_template("user_view.eex", "lib/your_app_web/views/#{context[:path]}.ex", [context: context])
   end
 
   def create_user_templates(base_context) do
   end
 
   def create_session_controller(base_context) do
-    copy_template("session_controller.ex", "lib/your_app_web/controllers/sesion_controller.ex", [])
+    context = Inflector.call("#{base_context}.SessionController")
+
+    copy_template("session_controller.eex", "lib/your_app_web/controllers/#{context[:path]}.ex", [context: context])
   end
 
   def create_session_view(base_context) do
-    copy_template("session_view.ex", "lib/your_app_web/views/session_view.ex", [])
+    context = Inflector.call("#{base_context}.SessionView")
+
+    copy_template("session_view.eex", "lib/your_app_web/views/#{context[:path]}.ex", [context: context])
   end
 
   def create_session_templates(base_context) do
   end
 
   def create_require_login_plug(base_context) do
-    copy_template("require_login.ex", "lib/your_app_web/plugs/require_login.ex", [])
+    context = Inflector.call("Plugs.#{base_context}.RequireLogin")
+
+    copy_template("require_login.eex", "lib/your_app_web/#{context[:path]}.ex", [context: context])
   end
 
   defp copy_template(name, final_path, opts \\ []) do

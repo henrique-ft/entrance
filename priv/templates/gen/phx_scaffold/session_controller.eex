@@ -1,5 +1,5 @@
-defmodule YourAppWeb.Accounts.SessionController do
-  use YourAppWeb, :controller
+defmodule <%= @context[:web_module] %>.<%= @context[:scoped] %> do
+  use <%= @context[:web_module] %>, :controller
   import Entrance.Login.Session, only: [login: 2, logout: 1]
 
   def new(conn, _params) do
