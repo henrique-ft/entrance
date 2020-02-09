@@ -39,6 +39,7 @@ defmodule Entrance.Phoenix.Inflector do
   def call(singular) do
     base = get_base()
     web_module = base |> web_module() |> inspect()
+    web_path = base |> web_path()
     scoped = camelize(singular)
     path = underscore(scoped)
     singular = String.split(path, "/") |> List.last
@@ -51,11 +52,16 @@ defmodule Entrance.Phoenix.Inflector do
      human: human,
      base: base,
      web_module: web_module,
+     web_path: web_path,
      test_module: test_module,
      module: module,
      scoped: scoped,
      singular: singular,
      path: path]
+  end
+
+  defp web_path(base) do
+    "#{Macro.underscore(base)}_web"
   end
 
   defp web_module(base) do

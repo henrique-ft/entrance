@@ -1,6 +1,6 @@
 defmodule Entrance.User do
   @moduledoc """
-    This module provider helper function for your app users management
+    This module provider helpers function for your app users management
   """
   alias Entrance.Auth.Secret
 
