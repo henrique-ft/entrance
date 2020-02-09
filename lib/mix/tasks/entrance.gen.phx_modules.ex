@@ -1,8 +1,35 @@
 defmodule Mix.Tasks.Entrance.Gen.PhxModules do
+  @shortdoc "Creates phoenix modules for authentication with entrance (session_controller, user_controller, views and plugs/require_login"
+
+  @moduledoc """
+  Creates phoenix modules for authentication with entrance (session_controller, user_controller and plugs/require_login
+
+      mix entrance.gen.phx_modules
+
+  This generator will add the following files to `lib/`:
+      * a controller in `lib/your_app_web/controllers/user_controller.ex`
+      * a view in `lib/your_app_web/views/user_view.ex`
+      * a controller in `lib/your_app_web/controllers/session_controller.ex`
+      * a view in `lib/your_app_web/views/session_view.ex`
+      * a plug in `lib/your_app_web/plugs/require_login.ex`
+
+  And also a test file for each of this files.
+
+  you can also set the modules context
+
+      mix entrance.gen.phx_modules --context Accounts
+
+  With "--context Accounts" your files will be:
+      * a controller in `lib/your_app_web/controllers/accounts/user_controller.ex`
+      * a view in `lib/your_app_web/views/accounts/user_view.ex`
+      * a controller in `lib/your_app_web/controllers/accounts/session_controller.ex`
+      * a view in `lib/your_app_web/views/accounts/session_view.ex`
+      * a plug in `lib/your_app_web/plugs/accounts/require_login.ex`
+  """
   alias Entrance.Phoenix.Inflector
   use Mix.Task
 
-  @shortdoc "Simply runs the Hello.say/0 function"
+  @doc false
   def run(io_puts \\ true, args) do
     if io_puts == true do
       IO.puts("""

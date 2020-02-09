@@ -29,8 +29,3 @@ use Mix.Config
 #
 #     import_config "#{Mix.env}.exs"
 #
-config :entrance,
-  repo: YourApp.Repo,
-  security_module: Entrance.Auth.Bcrypt,
-  user_module: YourApp.Accounts.User,
-  default_authenticable_field: :email
