@@ -1,4 +1,6 @@
 defmodule Entrance.Config do
+  @moduledoc false
+
   def config(name) do
     case Application.get_env(:entrance, name) do
       nil ->

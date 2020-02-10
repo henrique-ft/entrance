@@ -1,5 +1,6 @@
 defmodule Mix.Tasks.Entrance.Gen.PhxUserController do
   @shortdoc "Creates phoenix user controller for authentication with entrance"
+  @moduledoc "Creates phoenix user controller for authentication with entrance"
 
   alias Entrance.Mix.Phoenix.Inflector
   use Mix.Task
@@ -44,7 +45,7 @@ defmodule Mix.Tasks.Entrance.Gen.PhxUserController do
     IO.puts("")
   end
 
-  def create_user_controller(base_context) do
+  defp create_user_controller(base_context) do
     context = Inflector.call("#{base_context}UserController")
 
     copy_template(
@@ -54,7 +55,7 @@ defmodule Mix.Tasks.Entrance.Gen.PhxUserController do
     )
   end
 
-  def create_user_controller_test(base_context) do
+  defp create_user_controller_test(base_context) do
     context = Inflector.call("#{base_context}UserControllerTest")
 
     copy_template(
@@ -64,7 +65,7 @@ defmodule Mix.Tasks.Entrance.Gen.PhxUserController do
     )
   end
 
-  def create_user_view(base_context) do
+  defp create_user_view(base_context) do
     context = Inflector.call("#{base_context}UserView")
 
     copy_template("user_view.eex", "lib/#{context[:web_path]}/views/#{context[:path]}.ex",
@@ -72,7 +73,7 @@ defmodule Mix.Tasks.Entrance.Gen.PhxUserController do
     )
   end
 
-  def create_user_view_test(base_context) do
+  defp create_user_view_test(base_context) do
     context = Inflector.call("#{base_context}UserViewTest")
 
     copy_template("user_view_test.eex", "test/#{context[:web_path]}/views/#{context[:path]}.ex",

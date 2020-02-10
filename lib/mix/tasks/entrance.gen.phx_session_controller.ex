@@ -1,5 +1,6 @@
 defmodule Mix.Tasks.Entrance.Gen.PhxSessionController do
   @shortdoc "Creates phoenix session controller for authentication with entrance"
+  @moduledoc "Creates phoenix session controller for authentication with entrance"
 
   alias Entrance.Mix.Phoenix.Inflector
   use Mix.Task
@@ -44,7 +45,7 @@ defmodule Mix.Tasks.Entrance.Gen.PhxSessionController do
     IO.puts("")
   end
 
-  def create_session_controller(base_context) do
+  defp create_session_controller(base_context) do
     context = Inflector.call("#{base_context}SessionController")
 
     copy_template(
@@ -54,7 +55,7 @@ defmodule Mix.Tasks.Entrance.Gen.PhxSessionController do
     )
   end
 
-  def create_session_controller_test(base_context) do
+  defp create_session_controller_test(base_context) do
     context = Inflector.call("#{base_context}SessionControllerTest")
 
     copy_template(
@@ -64,7 +65,7 @@ defmodule Mix.Tasks.Entrance.Gen.PhxSessionController do
     )
   end
 
-  def create_session_view(base_context) do
+  defp create_session_view(base_context) do
     context = Inflector.call("#{base_context}SessionView")
 
     copy_template("session_view.eex", "lib/#{context[:web_path]}/views/#{context[:path]}.ex",
@@ -72,7 +73,7 @@ defmodule Mix.Tasks.Entrance.Gen.PhxSessionController do
     )
   end
 
-  def create_session_view_test(base_context) do
+  defp create_session_view_test(base_context) do
     context = Inflector.call("#{base_context}SessionViewTest")
 
     copy_template(

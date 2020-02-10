@@ -9,27 +9,27 @@ defmodule Entrance.User do
   @doc """
   Execute this behind the scenes:
   ```
-    alias Entrance.Auth.Secret
+  alias Entrance.Auth.Secret
 
-    # ...
-    %YourUser{}
-    |> YourUser.changeset(your_user_params)
-    |> Secret.put_session_secret()
-    |> YourRepo.insert()
+  # ...
+  %YourUser{}
+  |> YourUser.changeset(your_user_params)
+  |> Secret.put_session_secret()
+  |> YourRepo.insert()
   ```
 
   Returns `{:ok, user}` or `{:error, changeset}`
 
-  Requires `user_module` (when not setting user module directly) and `repo` to be configured via
+  Requires `user_module` and `repo` to be configured via
   `Mix.Config`.
 
-  # Examples
+  ### Examples
 
   ```
   {:ok, user} = Entrance.User.create(%{"email => "joe@dirt.com", "password" => "brandyr00lz"})
   ```
 
-  If you want to create with other user schemas, you can pass in the module directly.
+  If you want to use `create/2` with other user schema, you can set the module directly.
 
   ```
   {:ok, customer} = Entrance.User.create(Customer, %{"email => "joe@dirt.com", "password" => "brandyr00lz"})
@@ -47,20 +47,20 @@ defmodule Entrance.User do
   @doc """
   Execute this behind the scenes:
   ```
-    YourUser.changeset(%YourUser{}, %{})
+  YourUser.changeset(%YourUser{}, %{})
   ```
 
-  Returns and `Ecto.Changeset` struct
+  Returns an `Ecto.Changeset` struct
 
   Requires `user_module` to be configured via `Mix.Config`.
 
-  # Example
+  ### Example
 
   ```
-    # YourAppWeb.UserController ...
-    def new(conn, _params) do
-      conn |> render("new.html", changeset: Entrance.User.changeset)
-    end
+  # YourAppWeb.UserController ...
+  def new(conn, _params) do
+    conn |> render("new.html", changeset: Entrance.User.changeset)
+  end
   ```
   """
   def changeset do
@@ -69,15 +69,15 @@ defmodule Entrance.User do
   end
 
   @doc """
-  Similar to `Entrance.User.changeset/0` but not needs the `user_module` to be configured via `Mix.Config`
+  Similar to `Entrance.User.changeset/0` but not need the `user_module` to be configured via `Mix.Config`
 
-  # Example
+  ### Example
 
   ```
-    # YourAppWeb.UserController ...
-    def new(conn, _params) do
-      conn |> render("new.html", changeset: Entrance.User.changeset(Customer))
-    end
+  # YourAppWeb.UserController ...
+  def new(conn, _params) do
+    conn |> render("new.html", changeset: Entrance.User.changeset(Customer))
+  end
   ```
   """
   def changeset(user_module) do

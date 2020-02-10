@@ -1,5 +1,6 @@
 defmodule Mix.Tasks.Entrance.Gen.PhxRequireLogin do
   @shortdoc "Creates phoenix require login plug for authentication with entrance"
+  @moduledoc "Creates phoenix require login plug for authentication with entrance"
 
   alias Entrance.Mix.Phoenix.Inflector
   use Mix.Task
@@ -42,7 +43,7 @@ defmodule Mix.Tasks.Entrance.Gen.PhxRequireLogin do
     IO.puts("")
   end
 
-  def create_require_login_plug(base_context) do
+  defp create_require_login_plug(base_context) do
     context = Inflector.call("Plugs.#{base_context}RequireLogin")
 
     copy_template("require_login.eex", "lib/#{context[:web_path]}/#{context[:path]}.ex",
@@ -50,7 +51,7 @@ defmodule Mix.Tasks.Entrance.Gen.PhxRequireLogin do
     )
   end
 
-  def create_require_login_plug_test(base_context) do
+  defp create_require_login_plug_test(base_context) do
     context = Inflector.call("Plugs.#{base_context}RequireLoginTest")
 
     copy_template("require_login_test.eex", "test/#{context[:web_path]}/#{context[:path]}.ex",
