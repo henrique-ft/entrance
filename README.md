@@ -6,7 +6,7 @@
 ![License](https://img.shields.io/github/license/henriquefernandez/entrance?style=flat-square)
 ![Code Size](https://img.shields.io/github/languages/code-size/henriquefernandez/entrance?style=flat-square)
 
-Modules and functions to make authentication with *Plug / Phoenix* and *Ecto* easy without tons of configuration or boxing users into rigid and bloated framework.
+Modules and functions to make authentication with *Plug / Phoenix* and *Ecto* easy without tons of configuration or boxing users into rigid framework.
  
 The primary goal of *Entrance* is to build an opinionated interface and easy to use *API* on top of flexible modules that can also be used directly.
 
@@ -354,5 +354,6 @@ I'm totally open to new ideas. Fork, open issues and feel free to contribute wit
 Entrance was built upon [Doorman](https://github.com/BlakeWilliams/doorman). Thanks to [Blake Williams](https://github.com/blakewilliams) & [Ashley Foster](https://github.com/AshleyFoster).
 
 For the logo, thanks to [Melissa Moreira](https://github.com/melissamoreira).
+
 
 
