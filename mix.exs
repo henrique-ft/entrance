@@ -4,7 +4,7 @@ defmodule Entrance.Mixfile do
   def project do
     [
       app: :entrance,
-      version: "0.3.0",
+      version: "0.3.1",
       elixir: "~> 1.9",
       elixirc_paths: elixirc_paths(Mix.env()),
       build_embedded: Mix.env() == :prod,

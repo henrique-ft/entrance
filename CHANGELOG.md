@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.3.1] - 2020-02-15
+### Added
+- Entrance.User
+- Mix tasks (gen.user_controller, gen.session_controller, gen.require_login, gen.modules)
 ## [0.3.0] - 2020-01-31
 ### Added
 - Entrance.auth_one/3
