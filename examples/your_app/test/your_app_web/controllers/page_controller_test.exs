@@ -35,10 +35,10 @@ defmodule YourAppWeb.PageControllerTest do
     %{logged_in_conn: logged_in_conn}
   end
 
-  test "GET /secret", %{logged_in_conn: logged_in_conn} do
+  test "GET /protected", %{logged_in_conn: logged_in_conn} do
     response =
       logged_in_conn
-      |> get("/secret")
+      |> get("/protected")
 
     assert html_response(response, 200)
   end

@@ -1,0 +1,16 @@
+defmodule <%= @context[:web_module] %>.<%= @context[:scoped] %> do
+  use <%= @context[:web_module] %>, :controller
+
+  def new(conn, _params) do
+    conn |> render("new.html", changeset: Entrance.User.changeset)
+  end
+
+  def create(conn, %{"user" => user_params}) do
+    case Entrance.User.create(user_params) do
+      {:ok, _user} ->
+        conn |> redirect(to: "/")
+      {:error, changeset} ->
+        conn |> render("new.html", changeset: changeset)
+    end
+  end
+end

@@ -57,7 +57,7 @@ Run the migrations:
 
 Next, use `Entrance.Auth.Bcrypt` in your new `User` module and add a virtual `:password` field. `hash_password/1` is used in the changeset to hash our password and put it into the changeset as `:hashed_password`.
 
-*[your_app/lib/your_app/accounts/user.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app/accounts/user.ex)*
+*[your_app/lib/your_app/accounts/user.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app/accounts/user.ex)* 
 ```elixir
 defmodule YourApp.Accounts.User do
   use Ecto.Schema
@@ -96,9 +96,8 @@ Finally, we can add our plug so we can have access to *current_user* on `conn.as
 
 #### Creating Users
 
-To create a user we can use the `User.changeset/2` function we defined. Here we'll also add the `session_secret` to the user, which is only needed when creating an user or in case of compromised sessions.
+To create a user we can use the `User.changeset/2` function we defined. Here we'll also add the `session_secret` to the user, which is only needed when creating an user or in case of compromised sessions. Example:
 
-*[your_app/lib/your_app_web/controllers/user_controller.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/controllers/user_controller.ex)*
 ```elixir
 defmodule YourAppWeb.UserController do
   use YourAppWeb, :controller
@@ -128,11 +127,39 @@ defmodule YourAppWeb.UserController do
 end  
 ```
 
+But if we want less boilerplate we can use `Entrance.User.create/1` and `Entrance.User.changeset/2` that does all this setup for us:
+
+*[your_app/lib/your_app_web/controllers/user_controller.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/controllers/user_controller.ex)* |`$ mix entrance.gen.phx_user_controller`
+```elixir
+defmodule YourAppWeb.UserController do
+  use YourAppWeb, :controller
+    
+  def new(conn, _params) do    
+    conn |> render("new.html", changeset: Entrance.User.changeset)
+  end
+    
+  def create(conn, %{"user" => user_params}) do
+    case Entrance.User.create(user_params) do  
+      {:ok, _user} ->
+        conn |> redirect(to: "/")       
+      {:error, changeset} ->
+        conn |> render("new.html", changeset: changeset)
+    end 
+  end   
+end  
+```
+
+You can also create users based in another schemas (not only the default configured in `Mix.Config`):
+
+`Entrance.User.create(Customer, customer_params)`
+
+`Entrance.User.changeset(Customer)`
+
 #### Logging in users
 
 To login users we can use `Entrance.auth` and `Entrance.Login.Session.login/2`.
 
-*[your_app/lib/your_app_web/controllers/session_controller.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/controllers/session_controller.ex)*
+*[your_app/lib/your_app_web/controllers/session_controller.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/controllers/session_controller.ex)* |`$ mix entrance.gen.phx_session_controller`
 ```elixir
 defmodule YourAppWeb.SessionController do
   use YourAppWeb, :controller
@@ -187,7 +214,7 @@ Read more about *Entrance* "auth functions" variations [here](https://hexdocs.pm
 
 To require a user to be authenticated you can build a simple plug around `Entrance.logged_in?/1`.
 
-*[your_app/lib/your_app_web/plugs/require_login.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/plugs/require_login.ex)*
+*[your_app/lib/your_app_web/plugs/require_login.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/plugs/require_login.ex)* |`$ mix entrance.gen.phx_require_login`
 ```elixir
 defmodule YourApp.Plugs.RequireLogin do
   import Plug.Conn
@@ -209,17 +236,17 @@ end
 An example in *[your_app/lib/your_app_web/router.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/router.ex)*:
 
 ```elixir
-pipeline :secret do
+pipeline :protected do
   plug YourApp.Plugs.RequireLogin
 end 
 
 # ...
 
-scope "/secret", YourAppWeb do
+scope "/protected", YourAppWeb do
   pipe_through :browser
-  pipe_through :secret
+  pipe_through :protected
 
-  get "/", PageController, :secret
+  get "/", PageController, :protected
 end 
 
 # ...
@@ -229,7 +256,7 @@ end
 
 To logout users we can use `Entrance.Login.Session.logout/1`
 
-*[your_app/lib/your_app_web/controllers/session_controller.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/controllers/session_controller.ex)*
+*[your_app/lib/your_app_web/controllers/session_controller.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/controllers/session_controller.ex)* |`$ mix entrance.gen.phx_session_controller`
 ```elixir
 defmodule YourAppWeb.SessionController do 
   use YourAppWeb, :controller  
@@ -273,18 +300,11 @@ defmodule YourAppWeb.PageControllerTest do
 
   import Entrance.Login.Session, only: [login: 2] # Add this line
 
-  alias Entrance.Auth.Secret # And this line
-  alias YourApp.Accounts.User
-  alias YourApp.Repo
-
   # Setup an logged_in_conn
   setup do
-    changeset =
-      %User{}
-      |> User.changeset(%{email: "test@test.com", password: "test"})
-      |> Secret.put_session_secret()
-
-    {:ok, user} = Repo.insert(changeset)
+     # Create your test user
+    {:ok, user} =
+      Entrance.User.create(%{email: "test@test.com", password: "test"})
 
     opts =
       Plug.Session.init(
@@ -305,10 +325,10 @@ defmodule YourAppWeb.PageControllerTest do
     %{logged_in_conn: logged_in_conn}
   end
 
-  test "GET /secret", %{logged_in_conn: logged_in_conn} do
+  test "GET /protected", %{logged_in_conn: logged_in_conn} do
     response =
       logged_in_conn
-      |> get("/secret")
+      |> get("/protected")
 
     assert html_response(response, 200) # Yeah, it passes!
   end
@@ -334,5 +354,6 @@ I'm totally open to new ideas. Fork, open issues and feel free to contribute wit
 Entrance was built upon [Doorman](https://github.com/BlakeWilliams/doorman). Thanks to [Blake Williams](https://github.com/blakewilliams) & [Ashley Foster](https://github.com/AshleyFoster).
 
 For the logo, thanks to [Melissa Moreira](https://github.com/melissamoreira).
+
 
 

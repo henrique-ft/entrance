@@ -1,6 +1,5 @@
 defmodule EntranceTest do
   use Entrance.ConnCase
-  doctest Entrance
 
   @valid_email "joe@dirt.com"
   @valid_alternate_email "brandy@dirt.com"
