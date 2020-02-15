@@ -6,17 +6,11 @@ defmodule YourAppWeb.UserController do
   alias YourApp.Accounts.User
 
   def new(conn, _params) do
-    changeset = User.changeset(%User{}, %{})
-    conn |> render("new.html", changeset: changeset)
+    conn |> render("new.html", changeset: Entrance.User.changeset)
   end
 
   def create(conn, %{"user" => user_params}) do
-    changeset =
-      %User{}
-      |> User.changeset(user_params)
-      |> Secret.put_session_secret()
-
-    case Repo.insert(changeset) do
+    case Entrance.User.create(user_params) do
       {:ok, _user} ->
         conn |> redirect(to: "/")
       {:error, changeset} ->

@@ -73,8 +73,7 @@ defmodule YourApp.Accounts.User do
     timestamps()
   end
 
-  @doc false
-  def changeset(user, attrs) do
+  def create_changeset(user, attrs) do # Define a create_changeset function
     user
     |> cast(attrs, [:email, :password, :hashed_password, :session_secret]) # Dont forget to add :password here
     |> validate_required([:email, :password]) # And here
@@ -96,7 +95,7 @@ Finally, we can add our plug so we can have access to *current_user* on `conn.as
 
 #### Creating Users
 
-To create a user we can use the `User.changeset/2` function we defined. Here we'll also add the `session_secret` to the user, which is only needed when creating an user or in case of compromised sessions. Example:
+To create a user we can use the `User.create_changeset/2` function we defined. Here we'll also add the `session_secret` to the user, which is only needed when creating an user or in case of compromised sessions. Example:
 
 ```elixir
 defmodule YourAppWeb.UserController do
@@ -107,14 +106,14 @@ defmodule YourAppWeb.UserController do
   alias YourApp.Accounts.User
     
   def new(conn, _params) do    
-    changeset = User.changeset(%User{}, %{})
+    changeset = User.create_changeset(%User{}, %{})
     conn |> render("new.html", changeset: changeset)
   end
     
   def create(conn, %{"user" => user_params}) do
     changeset =
       %User{}                  
-      |> User.changeset(user_params)  
+      |> User.create_changeset(user_params)  
       |> Secret.put_session_secret()  
     
     case Repo.insert(changeset) do  
@@ -127,7 +126,7 @@ defmodule YourAppWeb.UserController do
 end  
 ```
 
-But if we want less boilerplate we can use `Entrance.User.create/1` and `Entrance.User.changeset/2` that does all this setup for us:
+If we want less boilerplate we can use `Entrance.User.create/1` and `Entrance.User.create_changeset/2` that does all this setup for us:
 
 *[your_app/lib/your_app_web/controllers/user_controller.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/controllers/user_controller.ex)* |`$ mix entrance.gen.phx_user_controller`
 ```elixir
@@ -135,7 +134,7 @@ defmodule YourAppWeb.UserController do
   use YourAppWeb, :controller
     
   def new(conn, _params) do    
-    conn |> render("new.html", changeset: Entrance.User.changeset)
+    conn |> render("new.html", changeset: Entrance.User.create_changeset)
   end
     
   def create(conn, %{"user" => user_params}) do
@@ -149,11 +148,15 @@ defmodule YourAppWeb.UserController do
 end  
 ```
 
-You can also create users based in another schemas (not only the default configured in `Mix.Config`):
+We can also create users based in another schemas (not only the default configured in `Mix.Config`):
 
-`Entrance.User.create(Customer, customer_params)`
+```elixir
+Entrance.User.create(Customer, customer_params)
+```
 
-`Entrance.User.changeset(Customer)`
+```elixir
+Entrance.User.create_changeset(Customer)
+```
 
 #### Logging in users
 
