@@ -32,7 +32,7 @@ Add entrance to your dependencies in `mix.exs`.
 
 ```elixir
 def deps do
-  [{:entrance, "~> 0.3.1"}]
+  [{:entrance, "~> 0.3.2"}]
 end
 ```
 
