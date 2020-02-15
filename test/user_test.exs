@@ -17,7 +17,7 @@ defmodule Entrance.UserTest do
     end
 
     @doc false
-    def changeset(user, attrs) do
+    def create_changeset(user, attrs) do
       user
       |> cast(attrs, [:email, :nickname, :admin, :password, :hashed_password, :session_secret])
       |> validate_required([:email, :password])
@@ -41,7 +41,7 @@ defmodule Entrance.UserTest do
     end
 
     @doc false
-    def changeset(user, attrs) do
+    def create_changeset(user, attrs) do
       user
       |> cast(attrs, [:email, :nickname, :admin, :password, :hashed_password, :session_secret])
       |> validate_required([:email, :password])
@@ -50,17 +50,17 @@ defmodule Entrance.UserTest do
   end
 
   defmodule FakeRepo do
-    def insert(%Ecto.Changeset{valid?: true} = changeset) do
-      {:ok, Map.merge(changeset.data, changeset.changes)}
+    def insert(%Ecto.Changeset{valid?: true} = create_changeset) do
+      {:ok, Map.merge(create_changeset.data, create_changeset.changes)}
     end
 
-    def insert(%Ecto.Changeset{valid?: false} = changeset) do
-      {:error, changeset}
+    def insert(%Ecto.Changeset{valid?: false} = create_changeset) do
+      {:error, create_changeset}
     end
   end
 
-  describe "User.changeset/0" do
-    test "returns user_module changeset" do
+  describe "User.create_changeset/0" do
+    test "returns user_module create_changeset" do
       Application.put_all_env(
         entrance: [
           repo: FakeRepo,
@@ -70,12 +70,12 @@ defmodule Entrance.UserTest do
         ]
       )
 
-      assert changeset = Entrance.User.changeset()
+      assert create_changeset = Entrance.User.create_changeset()
     end
   end
 
-  describe "User.changeset/1" do
-    test "returns user_module changeset" do
+  describe "User.create_changeset/1" do
+    test "returns user_module create_changeset" do
       Application.put_all_env(
         entrance: [
           repo: FakeRepo,
@@ -85,7 +85,7 @@ defmodule Entrance.UserTest do
         ]
       )
 
-      assert changeset = Entrance.User.changeset(AnotherFakeUser)
+      assert create_changeset = Entrance.User.create_changeset(AnotherFakeUser)
     end
   end
 
@@ -129,7 +129,7 @@ defmodule Entrance.UserTest do
       refute is_nil(user.session_secret)
     end
 
-    test "given wrong params return changeset error" do
+    test "given wrong params return create_changeset error" do
       Application.put_all_env(
         entrance: [
           repo: FakeRepo,
@@ -139,8 +139,8 @@ defmodule Entrance.UserTest do
         ]
       )
 
-      assert {:error, changeset} = Entrance.User.create(%{"password" => "secret123"})
-      refute is_nil(changeset.errors)
+      assert {:error, create_changeset} = Entrance.User.create(%{"password" => "secret123"})
+      refute is_nil(create_changeset.errors)
     end
   end
 end

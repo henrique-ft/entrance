@@ -30,8 +30,8 @@ defmodule YourAppWeb.Router do
 
     get "/", PageController, :index
 
-    get "/users/new", UserController, :new
-    post "/users/new", UserController, :create
+    get "/user/new", UserController, :new
+    post "/user/new", UserController, :create
 
     get "/session/new", SessionController, :new
     post "/session/new", SessionController, :create

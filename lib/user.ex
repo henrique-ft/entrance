@@ -13,7 +13,7 @@ defmodule Entrance.User do
 
   # ...
   %YourUser{}
-  |> YourUser.changeset(your_user_params)
+  |> YourUser.create_changeset(your_user_params)
   |> Secret.put_session_secret()
   |> YourRepo.insert()
   ```
@@ -29,7 +29,7 @@ defmodule Entrance.User do
   {:ok, user} = Entrance.User.create(%{"email => "joe@dirt.com", "password" => "brandyr00lz"})
   ```
 
-  If you want to use `create/2` with other user schema, you can set the module directly.
+  If you want to use `create/1` with other user schema, you can set the module directly.
 
   ```
   {:ok, customer} = Entrance.User.create(Customer, %{"email => "joe@dirt.com", "password" => "brandyr00lz"})
@@ -39,7 +39,7 @@ defmodule Entrance.User do
     user_module = user_module || config(:user_module)
 
     struct(user_module)
-    |> user_module.changeset(user_params)
+    |> user_module.create_changeset(user_params)
     |> Secret.put_session_secret()
     |> config(:repo).insert()
   end
@@ -47,7 +47,7 @@ defmodule Entrance.User do
   @doc """
   Execute this behind the scenes:
   ```
-  YourUser.changeset(%YourUser{}, %{})
+  YourUser.create_changeset(%YourUser{}, %{})
   ```
 
   Returns an `Ecto.Changeset` struct
@@ -59,13 +59,13 @@ defmodule Entrance.User do
   ```
   # YourAppWeb.UserController ...
   def new(conn, _params) do
-    conn |> render("new.html", changeset: Entrance.User.changeset)
+    conn |> render("new.html", changeset: Entrance.User.create_changeset)
   end
   ```
   """
-  def changeset do
+  def create_changeset do
     user_module = config(:user_module)
-    user_module.changeset(struct(user_module), %{})
+    user_module.create_changeset(struct(user_module), %{})
   end
 
   @doc """
@@ -76,11 +76,11 @@ defmodule Entrance.User do
   ```
   # YourAppWeb.UserController ...
   def new(conn, _params) do
-    conn |> render("new.html", changeset: Entrance.User.changeset(Customer))
+    conn |> render("new.html", changeset: Entrance.User.create_changeset(Customer))
   end
   ```
   """
-  def changeset(user_module) do
-    user_module.changeset(struct(user_module), %{})
+  def create_changeset(user_module) do
+    user_module.create_changeset(struct(user_module), %{})
   end
 end
