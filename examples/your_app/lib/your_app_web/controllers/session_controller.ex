@@ -21,7 +21,8 @@ defmodule YourAppWeb.SessionController do
 
   def delete(conn, _params) do
     conn
-    |> logout # This line
+    # This line
+    |> logout
     |> put_flash(:notice, "Successfully logged out")
     |> redirect(to: "/")
   end
