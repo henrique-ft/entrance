@@ -5,8 +5,10 @@ defmodule YourAppWeb.SessionControllerTest do
 
   @test_user_email "test@test.com"
   @test_user_password "test"
+
   @logout_route "/logout"
   @login_route "/session/new"
+  @root_route "/"
 
   use YourAppWeb.ConnCase
   import Entrance.Login.Session, only: [login: 2]
@@ -50,13 +52,13 @@ defmodule YourAppWeb.SessionControllerTest do
         "user_id" => user.id
       }
 
-      assert "/" = redirected_to(conn, 302)
+      assert @root_route = redirected_to(conn, 302)
       assert expected_plug_session["phoenix_flash"] == conn.private.plug_session["phoenix_flash"]
       assert expected_plug_session["user_id"] == conn.private.plug_session["user_id"]
     end
 
     @tag :skip
-    test "when login fails put error flash", %{session_conn: session_conn, user: user} do
+    test "when login fails put error flash", %{session_conn: session_conn} do
       params = %{"session" => %{"email" => "fail", "password" => "fail"}}
 
       conn =
@@ -74,7 +76,7 @@ defmodule YourAppWeb.SessionControllerTest do
         |> login(user)
         |> delete(@logout_route)
 
-      assert "/" = redirected_to(conn, 302)
+      assert @root_route = redirected_to(conn, 302)
       assert %{"notice" => "Successfully logged out"} == conn.private[:phoenix_flash]
       assert nil == conn.private.plug_session["user_id"]
     end

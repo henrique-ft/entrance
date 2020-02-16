@@ -1,4 +1,4 @@
-defmodule YourApp.Plugs.RequireLogin do
+defmodule YourAppWeb.Plugs.RequireLogin do
   import Plug.Conn
 
   def init(opts), do: opts

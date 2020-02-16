@@ -35,26 +35,22 @@ defmodule Mix.Tasks.Entrance.Gen.PhxRequireLogin do
 
     IO.puts("... Preparing require login plug")
 
-    base_context = get_context(args)
+    context = Inflector.call("Plugs.#{get_context(args)}RequireLogin")
 
-    create_require_login_plug(base_context)
-    create_require_login_plug_test(base_context)
+    create_require_login_plug(context)
+    create_require_login_plug_test(context)
 
     IO.puts("")
   end
 
-  defp create_require_login_plug(base_context) do
-    context = Inflector.call("Plugs.#{base_context}RequireLogin")
-
+  defp create_require_login_plug(context) do
     copy_template("require_login.eex", "lib/#{context[:web_path]}/#{context[:path]}.ex",
       context: context
     )
   end
 
-  defp create_require_login_plug_test(base_context) do
-    context = Inflector.call("Plugs.#{base_context}RequireLoginTest")
-
-    copy_template("require_login_test.eex", "test/#{context[:web_path]}/#{context[:path]}.ex",
+  defp create_require_login_plug_test(context) do
+    copy_template("require_login_test.eex", "test/#{context[:web_path]}/#{context[:path]}_test.exs",
       context: context
     )
   end

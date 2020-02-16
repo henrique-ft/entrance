@@ -56,11 +56,11 @@ defmodule Mix.Tasks.Entrance.Gen.PhxSessionController do
   end
 
   defp create_session_controller_test(base_context) do
-    context = Inflector.call("#{base_context}SessionControllerTest")
+    context = Inflector.call("#{base_context}SessionController")
 
     copy_template(
       "session_controller_test.eex",
-      "test/#{context[:web_path]}/controllers/#{context[:path]}.ex",
+      "test/#{context[:web_path]}/controllers/#{context[:path]}_test.exs",
       context: context
     )
   end
@@ -74,11 +74,11 @@ defmodule Mix.Tasks.Entrance.Gen.PhxSessionController do
   end
 
   defp create_session_view_test(base_context) do
-    context = Inflector.call("#{base_context}SessionViewTest")
+    context = Inflector.call("#{base_context}SessionView")
 
     copy_template(
       "session_view_test.eex",
-      "test/#{context[:web_path]}/views/#{context[:path]}.ex",
+      "test/#{context[:web_path]}/views/#{context[:path]}_test.exs",
       context: context
     )
   end
