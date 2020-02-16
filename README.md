@@ -23,6 +23,7 @@ You can find more in-depth [documentation here](https://hexdocs.pm/entrance/Entr
     - [Requiring Authentication](#requiring-authentication)
     - [Logging out users](#logging-out-users)
     - [Testing](#testing)
+    - [Mix tasks](#mix-tasks)
 - [Contribute](#contribute)
 - [Credits](#credits)
 
@@ -339,6 +340,34 @@ defmodule YourAppWeb.PageControllerTest do
   end
 end
 ```
+
+#### Mix tasks
+
+We can generate all the modules above with:
+
+ `$ mix entrance.gen.phx_modules`
+
+This generator will add the following files to `lib/`:
+  - a *controller* in `lib/your_app_web/controllers/user_controller.ex`
+  - a *view* in `lib/your_app_web/views/user_view.ex`
+  - a *controller* in `lib/your_app_web/controllers/session_controller.ex`
+  - a *view* in `lib/your_app_web/views/session_view.ex`
+  - a *plug* in `lib/your_app_web/plugs/require_login.ex`
+
+And also a test file for each of this files.
+
+We can set a different context if necessary:
+
+ `$ mix entrance.gen.phx_modules --context Accounts`
+
+With "--context Accounts" it creates:
+  - a *controller* in `lib/your_app_web/controllers/accounts/user_controller.ex`
+  - a *view* in `lib/your_app_web/views/accounts/user_view.ex`
+  - a *controller* in `lib/your_app_web/controllers/accounts/session_controller.ex`
+  - a *view* in `lib/your_app_web/views/accounts/session_view.ex`
+  - a *plug* in `lib/your_app_web/plugs/accounts/require_login.ex`
+
+It's a nice start point for our *app* authentication.
 
 ## Contribute
 
