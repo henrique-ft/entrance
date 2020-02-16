@@ -50,7 +50,9 @@ defmodule Mix.Tasks.Entrance.Gen.PhxRequireLogin do
   end
 
   defp create_require_login_plug_test(context) do
-    copy_template("require_login_test.eex", "test/#{context[:web_path]}/#{context[:path]}_test.exs",
+    copy_template(
+      "require_login_test.eex",
+      "test/#{context[:web_path]}/#{context[:path]}_test.exs",
       context: context
     )
   end

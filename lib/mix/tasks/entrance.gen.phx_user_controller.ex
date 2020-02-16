@@ -58,13 +58,15 @@ defmodule Mix.Tasks.Entrance.Gen.PhxUserController do
 
   defp create_user_controller_test(base_context) do
     context = Inflector.call("#{base_context}UserControllerTest")
+
     user_module =
       config(:user_module)
-      |> Atom.to_string
+      |> Atom.to_string()
       |> String.replace("Elixir.", "")
+
     repo =
       config(:repo)
-      |> Atom.to_string
+      |> Atom.to_string()
       |> String.replace("Elixir.", "")
 
     copy_template(
@@ -85,7 +87,9 @@ defmodule Mix.Tasks.Entrance.Gen.PhxUserController do
   defp create_user_view_test(base_context) do
     context = Inflector.call("#{base_context}UserView")
 
-    copy_template("user_view_test.eex", "test/#{context[:web_path]}/views/#{context[:path]}_test.exs",
+    copy_template(
+      "user_view_test.eex",
+      "test/#{context[:web_path]}/views/#{context[:path]}_test.exs",
       context: context
     )
   end
