@@ -126,7 +126,7 @@ defmodule YourAppWeb.UserController do
 end  
 ```
 
-If we want less boilerplate we can use `Entrance.User.create/1` and `Entrance.User.create_changeset/2` that does all this setup for us:
+If we want less boilerplate we can use `Entrance.User.create/1` and `Entrance.User.create_changeset/0` that does all this setup for us:
 
 *[your_app/lib/your_app_web/controllers/user_controller.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/controllers/user_controller.ex)* |`$ mix entrance.gen.phx_user_controller`
 ```elixir

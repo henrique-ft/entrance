@@ -69,7 +69,7 @@ defmodule Entrance.User do
   end
 
   @doc """
-  Similar to `Entrance.User.changeset/0` but not need the `user_module` to be configured via `Mix.Config`
+  Similar to `Entrance.User.create_changeset/0` but not need the `user_module` to be configured via `Mix.Config`
 
   ### Example
 
