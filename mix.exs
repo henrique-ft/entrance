@@ -12,6 +12,7 @@ defmodule Entrance.Mixfile do
       description: "Easy, secure and flexible authentication for Plug / Phoenix projects.",
       package: package(),
       docs: [logo: "priv/static/logo.png", extras: ["README.md"], main: "readme"],
+      name: "Entrance",
       deps: deps()
     ]
   end
