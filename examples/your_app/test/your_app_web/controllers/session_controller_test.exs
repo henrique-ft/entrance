@@ -1,4 +1,4 @@
-defmodule <%= @context[:web_module] %>.<%= @context[:scoped] %>Test do
+defmodule YourAppWeb.SessionControllerTest do
   @moduledoc """
     Ajust the tests conform your app configuration :)
   """
@@ -10,7 +10,7 @@ defmodule <%= @context[:web_module] %>.<%= @context[:scoped] %>Test do
   @login_route "/session/new"
   @root_route "/"
 
-  use <%= @context[:web_module] %>.ConnCase, async: true
+  use YourAppWeb.ConnCase
   import Entrance.Login.Session, only: [login: 2]
 
   setup do
@@ -35,7 +35,7 @@ defmodule <%= @context[:web_module] %>.<%= @context[:scoped] %>Test do
     %{session_conn: session_conn, user: user}
   end
 
-  describe "<%= @context[:web_module] %>.<%= @context[:scoped] %>.create/2" do
+  describe "YourAppWeb.SessionController.create/2" do
     @tag :skip
     test "when login succed, sets the user_id in session and redirect with notice", %{
       session_conn: session_conn,
@@ -70,7 +70,7 @@ defmodule <%= @context[:web_module] %>.<%= @context[:scoped] %>Test do
     end
 
     @tag :skip
-    test "<%= @context[:web_module] %>.<%= @context[:scoped] %>.delete/2", %{session_conn: session_conn, user: user} do
+    test "YourAppWeb.SessionController.delete/2", %{session_conn: session_conn, user: user} do
       conn =
         session_conn
         |> login(user)

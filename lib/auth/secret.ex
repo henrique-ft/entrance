@@ -19,7 +19,7 @@ defmodule Entrance.Auth.Secret do
     def create(conn, %{"user" => user_params}) do
       changeset =
         %User{}
-        |> User.changeset(user_params)
+        |> User.create_changeset(user_params)
         |> Secret.put_session_secret()
 
       case Repo.insert(changeset) do
@@ -41,7 +41,7 @@ defmodule Entrance.Auth.Secret do
 
   ```
   %User{}
-  |> User.changeset(user_params)
+  |> User.create_changeset(user_params)
   |> Secret.put_session_secret()
   ```
   """

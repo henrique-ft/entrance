@@ -154,6 +154,8 @@ We can also create users based in another schemas (not only the default configur
 Entrance.User.create(Customer, customer_params)
 ```
 
+And get their `create_changesets` too...
+
 ```elixir
 Entrance.User.create_changeset(Customer)
 ```
@@ -219,7 +221,7 @@ To require a user to be authenticated you can build a simple plug around `Entran
 
 *[your_app/lib/your_app_web/plugs/require_login.ex](https://github.com/henriquefernandez/entrance/blob/master/examples/your_app/lib/your_app_web/plugs/require_login.ex)* |`$ mix entrance.gen.phx_require_login`
 ```elixir
-defmodule YourApp.Plugs.RequireLogin do
+defmodule YourAppWeb.Plugs.RequireLogin do
   import Plug.Conn
 
   def init(opts), do: opts
@@ -240,7 +242,7 @@ An example in *[your_app/lib/your_app_web/router.ex](https://github.com/henrique
 
 ```elixir
 pipeline :protected do
-  plug YourApp.Plugs.RequireLogin
+  plug YourAppWeb.Plugs.RequireLogin
 end 
 
 # ...

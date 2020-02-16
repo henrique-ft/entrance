@@ -11,7 +11,7 @@ defmodule YourAppWeb.Router do
   end
 
   pipeline :protected do
-    plug YourApp.Plugs.RequireLogin
+    plug YourAppWeb.Plugs.RequireLogin
   end
 
   pipeline :api do

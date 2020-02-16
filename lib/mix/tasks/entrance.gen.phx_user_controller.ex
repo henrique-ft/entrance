@@ -3,6 +3,7 @@ defmodule Mix.Tasks.Entrance.Gen.PhxUserController do
   @moduledoc "Creates phoenix user controller for authentication with entrance"
 
   alias Entrance.Mix.Phoenix.Inflector
+  import Entrance.Config, only: [config: 1]
   use Mix.Task
 
   @doc false
@@ -58,10 +59,20 @@ defmodule Mix.Tasks.Entrance.Gen.PhxUserController do
   defp create_user_controller_test(base_context) do
     context = Inflector.call("#{base_context}UserControllerTest")
 
+    user_module =
+      config(:user_module)
+      |> Atom.to_string()
+      |> String.replace("Elixir.", "")
+
+    repo =
+      config(:repo)
+      |> Atom.to_string()
+      |> String.replace("Elixir.", "")
+
     copy_template(
       "user_controller_test.eex",
-      "test/#{context[:web_path]}/controllers/#{context[:path]}.ex",
-      context: context
+      "test/#{context[:web_path]}/controllers/#{context[:path]}_test.exs",
+      context: Keyword.merge(context, user_module: user_module, repo: repo)
     )
   end
 
@@ -74,9 +85,11 @@ defmodule Mix.Tasks.Entrance.Gen.PhxUserController do
   end
 
   defp create_user_view_test(base_context) do
-    context = Inflector.call("#{base_context}UserViewTest")
+    context = Inflector.call("#{base_context}UserView")
 
-    copy_template("user_view_test.eex", "test/#{context[:web_path]}/views/#{context[:path]}.ex",
+    copy_template(
+      "user_view_test.eex",
+      "test/#{context[:web_path]}/views/#{context[:path]}_test.exs",
       context: context
     )
   end

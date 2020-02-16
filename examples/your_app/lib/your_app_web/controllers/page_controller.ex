@@ -5,7 +5,7 @@ defmodule YourAppWeb.PageController do
     render(conn, "index.html", %{current_user: conn.assigns[:current_user] || %{}})
   end
 
-  def secret(conn, _params) do
-    render(conn, "secret.html", %{current_user: conn.assigns[:current_user]})
+  def protected(conn, _params) do
+    render(conn, "protected.html", %{current_user: conn.assigns[:current_user]})
   end
 end

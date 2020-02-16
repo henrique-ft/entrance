@@ -25,8 +25,7 @@ defmodule Entrance.Auth.Bcrypt do
       timestamps()
     end
 
-    @doc false
-    def changeset(user, attrs) do
+    def create_changeset(user, attrs) do
       user
       |> cast(attrs, [:email, :password, :hashed_password, :session_secret])
       |> validate_required([:email, :password])
@@ -53,7 +52,7 @@ defmodule Entrance.Auth.Bcrypt do
   import Entrance.Auth.Bcrypt, only: [hash_password: 1]
 
   # ... your user schema
-  def changeset(user, attrs) do
+  def create_changeset(user, attrs) do
     user
     |> cast(attrs, [:email, :password, :hashed_password, :session_secret])
     |> validate_required([:email, :password])

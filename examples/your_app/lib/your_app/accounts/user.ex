@@ -5,7 +5,8 @@ defmodule YourApp.Accounts.User do
 
   schema "users" do
     field :email, :string
-    field :password, :string, virtual: true # Add this line
+    # Add this line
+    field :password, :string, virtual: true
     field :hashed_password, :string
     field :session_secret, :string
 
@@ -15,8 +16,11 @@ defmodule YourApp.Accounts.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :password, :hashed_password, :session_secret]) # Dont forget to add :password here
-    |> validate_required([:email, :password]) # And here
-    |> hash_password # Add this
+    # Dont forget to add :password here
+    |> cast(attrs, [:email, :password, :hashed_password, :session_secret])
+    # And here
+    |> validate_required([:email, :password])
+    # Add this
+    |> hash_password
   end
 end

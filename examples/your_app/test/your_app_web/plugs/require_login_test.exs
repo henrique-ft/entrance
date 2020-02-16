@@ -1,12 +1,12 @@
-defmodule <%= @context[:web_module] %>.<%= @context[:scoped] %>Test do
+defmodule YourAppWeb.Plugs.RequireLoginTest do
   @moduledoc """
     Ajust the tests conform your app configuration :)
   """
 
   @login_route "/session/new"
 
-  use <%= @context[:web_module] %>.ConnCase, async: true
-  alias <%= @context[:web_module] %>.<%= @context[:scoped] %>
+  use YourAppWeb.ConnCase
+  alias YourAppWeb.Plugs.RequireLogin
 
   setup do
     opts =
@@ -28,7 +28,7 @@ defmodule <%= @context[:web_module] %>.<%= @context[:scoped] %>Test do
     %{session_conn: session_conn}
   end
 
-  describe "<%= @context[:web_module] %>.<%= @context[:scoped] %>.call/2" do
+  describe "YourAppWeb.Plugs.RequireLogin.call/2" do
     @tag :skip
     test "when user is not logged in, redirect to login route", %{
       session_conn: session_conn
@@ -37,4 +37,3 @@ defmodule <%= @context[:web_module] %>.<%= @context[:scoped] %>Test do
     end
   end
 end
-
