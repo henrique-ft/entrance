@@ -66,7 +66,7 @@ defmodule YourAppWeb.SessionControllerTest do
         |> post(@login_route, params)
 
       assert %{"error" => "No user found with the provided credentials"} ==
-        conn.private[:phoenix_flash]
+               conn.private[:phoenix_flash]
     end
 
     @tag :skip

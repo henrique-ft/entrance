@@ -14,7 +14,7 @@ defmodule YourApp.Accounts.User do
   end
 
   @doc false
-  def changeset(user, attrs) do
+  def create_changeset(user, attrs) do
     user
     # Dont forget to add :password here
     |> cast(attrs, [:email, :password, :hashed_password, :session_secret])

@@ -2,7 +2,7 @@ defmodule YourAppWeb.UserController do
   use YourAppWeb, :controller
 
   def new(conn, _params) do
-    conn |> render("new.html", changeset: Entrance.User.changeset())
+    conn |> render("new.html", changeset: Entrance.User.create_changeset())
   end
 
   def create(conn, %{"user" => user_params}) do

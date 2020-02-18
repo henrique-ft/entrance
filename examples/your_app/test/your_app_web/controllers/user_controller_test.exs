@@ -44,7 +44,7 @@ defmodule YourAppWeb.UserControllerTest do
         session_conn
         |> post(@create_user_route, params)
 
-      assert Repo.all(User) |> Enum.count == 1
+      assert Repo.all(User) |> Enum.count() == 1
       assert @root_route = redirected_to(conn, 302)
     end
   end

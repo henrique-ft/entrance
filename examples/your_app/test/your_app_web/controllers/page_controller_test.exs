@@ -3,18 +3,8 @@ defmodule YourAppWeb.PageControllerTest do
 
   import Entrance.Login.Session, only: [login: 2]
 
-  alias Entrance.Auth.Secret
-
-  alias YourApp.Accounts.User
-  alias YourApp.Repo
-
   setup do
-    changeset =
-      %User{}
-      |> User.changeset(%{email: "test@test.com", password: "test"})
-      |> Secret.put_session_secret()
-
-    {:ok, user} = Repo.insert(changeset)
+    {:ok, user} = Entrance.User.create(%{email: "test@test.com", password: "test"})
 
     opts =
       Plug.Session.init(
