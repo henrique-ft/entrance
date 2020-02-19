@@ -13,7 +13,7 @@ defmodule Entrance.User do
 
   # ...
   %YourUser{}
-  |> YourUser.create_changeset(your_user_params)
+  |> YourUser.create_changeset(user_params)
   |> Secret.put_session_secret()
   |> YourRepo.insert()
   ```
@@ -29,7 +29,7 @@ defmodule Entrance.User do
   {:ok, user} = Entrance.User.create(%{"email => "joe@dirt.com", "password" => "brandyr00lz"})
   ```
 
-  If you want to use `create/1` with other user schema, you can set the module directly.
+  If you want to use `create/2` with other user schema, you can set the module directly.
 
   ```
   {:ok, customer} = Entrance.User.create(Customer, %{"email => "joe@dirt.com", "password" => "brandyr00lz"})
@@ -42,6 +42,44 @@ defmodule Entrance.User do
     |> user_module.create_changeset(user_params)
     |> Secret.put_session_secret()
     |> config(:repo).insert()
+  end
+
+  @doc """
+  Similar to `Entrance.User.create/2`, but raises an error if `user_params` is invalid.
+
+  Execute this behind the scenes:
+  ```
+  alias Entrance.Auth.Secret
+
+  # ...
+  %YourUser{}
+  |> YourUser.create_changeset(user_params)
+  |> Secret.put_session_secret()
+  |> YourRepo.insert!()
+  ```
+
+  Requires `user_module` and `repo` to be configured via
+  `Mix.Config`.
+
+  ### Examples
+
+  ```
+  {:ok, user} = Entrance.User.create!(%{"email => "joe@dirt.com", "password" => "brandyr00lz"})
+  ```
+
+  If you want to use `create/1` with other user schema, you can set the module directly.
+
+  ```
+  {:ok, customer} = Entrance.User.create!(Customer, %{"email => "joe@dirt.com", "password" => "brandyr00lz"})
+  ```
+  """
+  def create!(user_module \\ nil, user_params) do
+    user_module = user_module || config(:user_module)
+
+    struct(user_module)
+    |> user_module.create_changeset(user_params)
+    |> Secret.put_session_secret()
+    |> config(:repo).insert!()
   end
 
   @doc """
