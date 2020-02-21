@@ -84,7 +84,8 @@ defmodule Mix.Tasks.Entrance.Gen.PhxSessionController do
   end
 
   defp copy_template(name, final_path, opts) do
-    Mix.Generator.copy_template("priv/templates/gen/phx_modules/#{name}", final_path, opts)
+    Path.join(:code.priv_dir(:entrance), "templates/entrance.gen.phx_session_controller/#{name}")
+    |> Mix.Generator.copy_template(final_path, opts)
   end
 
   defp get_context(["--context", module]), do: "#{Inflector.call(module)[:scoped]}."
