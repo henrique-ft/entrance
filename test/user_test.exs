@@ -163,7 +163,8 @@ defmodule Entrance.UserTest do
         ]
       )
 
-      assert user = Entrance.User.create!(%{"email" => "hello@test.com", "password" => "secret123"})
+      assert user =
+               Entrance.User.create!(%{"email" => "hello@test.com", "password" => "secret123"})
 
       assert user.email == "hello@test.com"
       assert user.password == "secret123"
@@ -180,7 +181,8 @@ defmodule Entrance.UserTest do
         ]
       )
 
-      assert %AnotherFakeUser{} = user =
+      assert %AnotherFakeUser{} =
+               user =
                Entrance.User.create!(AnotherFakeUser, %{
                  "email" => "hello@test.com",
                  "password" => "secret123"
@@ -201,7 +203,9 @@ defmodule Entrance.UserTest do
         ]
       )
 
-      assert_raise RuntimeError, "oops", fn -> Entrance.User.create!(%{"password" => "secret123"}) end
+      assert_raise RuntimeError, "oops", fn ->
+        Entrance.User.create!(%{"password" => "secret123"})
+      end
     end
   end
 end
