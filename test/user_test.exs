@@ -57,6 +57,14 @@ defmodule Entrance.UserTest do
     def insert(%Ecto.Changeset{valid?: false} = create_changeset) do
       {:error, create_changeset}
     end
+
+    def insert!(%Ecto.Changeset{valid?: true} = create_changeset) do
+      Map.merge(create_changeset.data, create_changeset.changes)
+    end
+
+    def insert!(%Ecto.Changeset{valid?: false}) do
+      raise "oops"
+    end
   end
 
   describe "User.create_changeset/0" do
@@ -141,6 +149,63 @@ defmodule Entrance.UserTest do
 
       assert {:error, create_changeset} = Entrance.User.create(%{"password" => "secret123"})
       refute is_nil(create_changeset.errors)
+    end
+  end
+
+  describe "User.create!/2" do
+    test "given correct user params, create an user and sets session_secret" do
+      Application.put_all_env(
+        entrance: [
+          repo: FakeRepo,
+          user_module: FakeUser,
+          security_module: Entrance.Auth.Bcrypt,
+          default_authenticable_field: :email
+        ]
+      )
+
+      assert user =
+               Entrance.User.create!(%{"email" => "hello@test.com", "password" => "secret123"})
+
+      assert user.email == "hello@test.com"
+      assert user.password == "secret123"
+      refute is_nil(user.session_secret)
+    end
+
+    test "given correct user params with another user, create an user and sets session_secret" do
+      Application.put_all_env(
+        entrance: [
+          repo: FakeRepo,
+          user_module: FakeUser,
+          security_module: Entrance.Auth.Bcrypt,
+          default_authenticable_field: :email
+        ]
+      )
+
+      assert %AnotherFakeUser{} =
+               user =
+               Entrance.User.create!(AnotherFakeUser, %{
+                 "email" => "hello@test.com",
+                 "password" => "secret123"
+               })
+
+      assert user.email == "hello@test.com"
+      assert user.password == "secret123"
+      refute is_nil(user.session_secret)
+    end
+
+    test "given wrong params raise an error" do
+      Application.put_all_env(
+        entrance: [
+          repo: FakeRepo,
+          user_module: FakeUser,
+          security_module: Entrance.Auth.Bcrypt,
+          default_authenticable_field: :email
+        ]
+      )
+
+      assert_raise RuntimeError, "oops", fn ->
+        Entrance.User.create!(%{"password" => "secret123"})
+      end
     end
   end
 end
