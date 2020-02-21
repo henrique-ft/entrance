@@ -45,7 +45,7 @@ defmodule Entrance.User do
   end
 
   @doc """
-  Similar to `Entrance.User.create/2`, but raises an error if `user_params` is invalid.
+  Similar to `Entrance.User.create/2`, but returns the user struct and raises an error if `user_params` is invalid.
 
   Execute this behind the scenes:
   ```
@@ -64,13 +64,13 @@ defmodule Entrance.User do
   ### Examples
 
   ```
-  {:ok, user} = Entrance.User.create!(%{"email => "joe@dirt.com", "password" => "brandyr00lz"})
+  user = Entrance.User.create!(%{"email => "joe@dirt.com", "password" => "brandyr00lz"})
   ```
 
-  If you want to use `create/1` with other user schema, you can set the module directly.
+  If you want to use `create!/2` with other user schema, you can set the module directly.
 
   ```
-  {:ok, customer} = Entrance.User.create!(Customer, %{"email => "joe@dirt.com", "password" => "brandyr00lz"})
+  customer = Entrance.User.create!(Customer, %{"email => "joe@dirt.com", "password" => "brandyr00lz"})
   ```
   """
   def create!(user_module \\ nil, user_params) do
