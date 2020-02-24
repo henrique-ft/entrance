@@ -23,7 +23,7 @@ You can find more in-depth [documentation here](https://hexdocs.pm/entrance/Entr
     - [Requiring Authentication](#requiring-authentication)
     - [Logging out users](#logging-out-users)
     - [Testing](#testing)
-    - [Mix tasks](#mix-tasks)
+    - [Generating Modules](#generating-modules)
 - [Contribute](#contribute)
 - [Credits](#credits)
 
@@ -341,7 +341,7 @@ defmodule YourAppWeb.PageControllerTest do
 end
 ```
 
-#### Mix tasks
+#### Generating Modules
 
 We can generate all the modules above with:
 
