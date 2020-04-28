@@ -13,7 +13,7 @@ The primary goal of *Entrance* is to build an opinionated interface and easy to 
 When to choose *Entrance*:
 
 - You need a lightweight authentication framework that offers the basics in a productive way.
-- You have a project with Doorman authentication and want to upgrade it.
+- You have a project with [Doorman](https://github.com/BlakeWilliams/doorman) authentication and want to upgrade it.
 
 You can find more in-depth [documentation here](https://hexdocs.pm/entrance/Entrance.html#content). 
 
