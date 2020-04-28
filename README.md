@@ -10,7 +10,10 @@ Modules and functions to make authentication with *Plug / Phoenix* and *Ecto* ea
  
 The primary goal of *Entrance* is to build an opinionated interface and easy to use *API* on top of flexible modules that can also be used directly.
 
-If you like simple and beautiful code, you'd like *Entrance*.
+When to choose *Entrance*:
+
+- You need a lightweight authentication framework that offers the basics in a productive way.
+- You have a project with Doorman authentication and want to upgrade it.
 
 You can find more in-depth [documentation here](https://hexdocs.pm/entrance/Entrance.html#content). 
 
