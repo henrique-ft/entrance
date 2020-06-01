@@ -15,7 +15,6 @@ If you:
 - Need a lightweight authentication framework that offers the basics in a productive way.
 - Need a authentication framework that don’t depends on Phoenix.
 - Have a project with [Doorman](https://github.com/BlakeWilliams/doorman) authentication and want to upgrade it.
-- Are building a “pet project”.
 
 I think Entrance can be a good fit!
 
