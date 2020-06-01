@@ -4,12 +4,12 @@ defmodule Entrance.Mixfile do
   def project do
     [
       app: :entrance,
-      version: "0.4.2",
+      version: "0.4.3",
       elixir: "~> 1.9",
       elixirc_paths: elixirc_paths(Mix.env()),
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
-      description: "Easy, secure and flexible authentication for Plug / Phoenix projects.",
+      description: "Flexible, lightweight and productive authentication for Plug, Phoenix and Ecto projects",
       package: package(),
       docs: [logo: "priv/static/logo.png", extras: ["README.md"], main: "readme"],
       name: "Entrance",

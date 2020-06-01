@@ -6,7 +6,7 @@
 ![License](https://img.shields.io/github/license/henriquefernandez/entrance?style=flat-square)
 ![Code Size](https://img.shields.io/github/languages/code-size/henriquefernandez/entrance?style=flat-square)
 
-Modules and functions to make authentication with *Plug / Phoenix* and *Ecto* easy without tons of configuration or boxing users into rigid framework.
+Flexible, lightweight and productive authentication for *Plug*, *Phoenix* and *Ecto* projects.
  
 The primary goal of *Entrance* is to build an opinionated interface and easy to use *API* on top of flexible modules that can also be used directly.
 
@@ -36,7 +36,7 @@ Add entrance to your dependencies in `mix.exs`.
 
 ```elixir
 def deps do
-  [{:entrance, "~> 0.4.2"}]
+  [{:entrance, "~> 0.4.3"}]
 end
 ```
 
