@@ -10,10 +10,14 @@ Flexible, lightweight and productive authentication for *Plug*, *Phoenix* and *E
  
 The primary goal of *Entrance* is to build an opinionated interface and easy to use *API* on top of flexible modules that can also be used directly.
 
-When to choose *Entrance*:
+If you:
 
-- You need a lightweight authentication framework that offers the basics in a productive way.
-- You have a project with [Doorman](https://github.com/BlakeWilliams/doorman) authentication and want to upgrade it.
+- Need a lightweight authentication framework that offers the basics in a productive way.
+- Need a authentication framework that don’t depends on Phoenix.
+- Have a project with [Doorman](https://github.com/BlakeWilliams/doorman) authentication and want to upgrade it.
+- Are building a “pet project”.
+
+I think Entrance can be a good fit!
 
 You can find more in-depth [documentation here](https://hexdocs.pm/entrance/Entrance.html#content). 
 
