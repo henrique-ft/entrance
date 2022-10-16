@@ -1,4 +1,4 @@
-![Entrance](https://www.truehenrique.com/images/entrance_logo.png)
+![Entrance](https://github.com/henrique-ft/entrance/blob/master/priv/static/logo.png)
 
 # Entrance
 
